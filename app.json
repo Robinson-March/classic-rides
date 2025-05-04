@@ -1,29 +1,51 @@
 {
-  "expo": {
-    "name": "CR",
-    "slug": "CR",
-    "version": "1.0.0",
-    "orientation": "portrait",
-    "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
-    "newArchEnabled": true,
-    "splash": {
-      "image": "./assets/splash-icon.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
-    "ios": {
-      "supportsTablet": true
-    },
-    "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
-      },
-      "edgeToEdgeEnabled": true
-    },
-    "web": {
-      "favicon": "./assets/favicon.png"
-    }
-  }
+	"expo": {
+		"name": "CR",
+		"slug": "CR",
+		"version": "1.0.0",
+		"orientation": "portrait",
+		"icon": "./assets/icon.png",
+		"userInterfaceStyle": "light",
+		"newArchEnabled": true,
+		"splash": {
+			"image": "./assets/splash-icon.png",
+			"resizeMode": "contain",
+			"backgroundColor": "#ffffff"
+		},
+		"ios": {
+			"supportsTablet": true
+		},
+		"android": {
+			"adaptiveIcon": {
+				"foregroundImage": "./assets/adaptive-icon.png",
+				"backgroundColor": "#ffffff"
+			},
+			"edgeToEdgeEnabled": true,
+			"permissions": [
+				"android.permission.ACCESS_COARSE_LOCATION",
+				"android.permission.ACCESS_FINE_LOCATION",
+				"android.permission.ACCESS_COARSE_LOCATION",
+				"android.permission.ACCESS_FINE_LOCATION"
+			],
+			"package": "com.anonymous.CR"
+		},
+		"web": {
+			"favicon": "./assets/favicon.png"
+		},
+		"plugins": [
+			[
+				"expo-maps",
+				{
+					"requestLocationPermission": "true",
+					"locationPermission": "Allow $(PRODUCT_NAME) to use your location"
+				}
+			],
+			[
+				"expo-dev-client",
+				{
+					"launchMode": "most-recent"
+				}
+			]
+		]
+	}
 }
