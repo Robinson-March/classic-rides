@@ -39,8 +39,6 @@ const TourCard: React.FC<TourCardProps> = ({
 		>
 			<View style={styles.imageContainer}>
 				<Image source={image} style={styles.image} />
-			</View>
-			<View style={styles.contentContainer}>
 				<CRText font="Karla" weight="light" style={styles.title}>
 					{title}
 				</CRText>
@@ -54,6 +52,20 @@ const TourCard: React.FC<TourCardProps> = ({
 					</View>
 				)}
 			</View>
+			{/* <View style={styles.contentContainer}>
+				<CRText font="Karla" weight="light" style={styles.title}>
+					{title}
+				</CRText>
+				{description && (
+					<CRText style={styles.description}>{description}</CRText>
+				)}
+				{time && price && (
+					<View style={styles.detailsContainer}>
+						{time && <CRText style={styles.time}>{time}</CRText>}
+						{price && <CRText style={styles.price}>{price}</CRText>}
+					</View>
+				)}
+			</View> */}
 		</TouchableOpacity>
 	);
 };
@@ -62,25 +74,25 @@ const styles = StyleSheet.create({
 	container: {
 		width: cardWidth,
 		backgroundColor: "#FFFFFF",
-		borderRadius: 12,
-		overflow: "hidden",
+		borderRadius: 20,
 		shadowColor: "#000",
 		shadowOffset: { width: 0, height: 2 },
 		shadowOpacity: 0.1,
-		shadowRadius: 4,
-		elevation: 2,
+		shadowRadius: 50,
+		elevation: 20,
+		gap: 5,
 	},
 	imageContainer: {
 		width: "100%",
-		height: cardWidth * 0.6, // Aspect ratio 5:3
-		borderTopLeftRadius: 12,
-		borderTopRightRadius: 12,
-		overflow: "hidden",
+		height: "auto", // Aspect ratio 5:3
+		padding: 10,
+		gap: 5,
 	},
 	image: {
 		width: "100%",
-		height: "100%",
+		height: 100,
 		resizeMode: "cover",
+		borderRadius: 20,
 	},
 	contentContainer: {
 		padding: 12,
@@ -89,12 +101,10 @@ const styles = StyleSheet.create({
 		fontSize: 16,
 		fontWeight: "600",
 		color: "#333333",
-		marginBottom: 4,
 	},
 	description: {
 		fontSize: 12,
 		color: "#666666",
-		marginBottom: 8,
 	},
 	detailsContainer: {
 		flexDirection: "row",

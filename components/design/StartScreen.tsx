@@ -118,7 +118,7 @@ export default function StartScreen({ navigation }) {
 }
 const { width, height } = Dimensions.get("window");
 const CARD_WIDTH = width * 0.5;
-const CARD_HEIGHT = height * 0.2;
+const CARD_HEIGHT = height * 0.23;
 
 const styles = StyleSheet.create({
 	container: {

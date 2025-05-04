@@ -15,15 +15,9 @@ export const RideOptionButton: React.FC<Props> = ({ title, onPress }) => (
 
 const styles = StyleSheet.create({
 	button: {
-		borderRadius: 16,
-		borderColor: "#D3D3D3",
-		borderWidth: 1,
-		paddingVertical: 18,
-		paddingHorizontal: 20,
-		marginVertical: 10,
+		borderRadius: 50,
 		alignItems: "center",
-		backgroundColor: "#fff",
-		elevation: 2,
+		padding: 15,
 	},
 	text: {
 		fontSize: 16,

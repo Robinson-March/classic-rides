@@ -52,6 +52,7 @@ const styles = StyleSheet.create({
 		flexDirection: "row",
 		alignItems: "center",
 		justifyContent: "space-between",
+		alignSelf: "center",
 		width: crWidth * 0.8,
 	},
 	menuButton: {

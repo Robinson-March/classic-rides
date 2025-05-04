@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import * as Location from "expo-location";
 import MapView, { Marker } from "react-native-maps";
+import { crHeight } from "../shortened/Dimensions";
 
 interface MapCardProps {
 	title?: string;
@@ -98,16 +99,16 @@ const MapCard: React.FC<MapCardProps> = ({
 		<TouchableOpacity
 			style={[
 				styles.container,
-				{
-					width: typeof width === "number" ? width : width,
-					height: typeof height === "number" ? height : Number.parseInt(height),
-				},
+				// {
+				// 	width: typeof width === "number" ? width : width,
+				// 	height: typeof height === "number" ? height : Number.parseInt(height),
+				// },
 			]}
 			onPress={handleMapPress}
 			activeOpacity={0.9}
 		>
 			<Text style={styles.title}>{title}</Text>
-			<View style={styles.mapContainer}>
+			<View>
 				{loading ? (
 					<View style={styles.loadingContainer}>
 						<ActivityIndicator size="large" color="#009688" />
@@ -122,16 +123,18 @@ const MapCard: React.FC<MapCardProps> = ({
 						<Text style={styles.errorText}>Couldn't load the map</Text>
 					</View>
 				) : (
-					<MapView
-						style={styles.mapView}
-						initialRegion={region}
-						rotateEnabled={false}
-						pitchEnabled={false}
-						zoomEnabled={false}
-						scrollEnabled={false}
-					>
-						<Marker coordinate={region} />
-					</MapView>
+					<View style={{ borderRadius: 20 }}>
+						<MapView
+							style={styles.mapView}
+							initialRegion={region}
+							rotateEnabled={false}
+							pitchEnabled={false}
+							zoomEnabled={false}
+							scrollEnabled={false}
+						>
+							<Marker coordinate={region} />
+						</MapView>
+					</View>
 				)}
 			</View>
 		</TouchableOpacity>
@@ -141,13 +144,14 @@ const MapCard: React.FC<MapCardProps> = ({
 const styles = StyleSheet.create({
 	container: {
 		backgroundColor: "#FFFFFF",
-		borderRadius: 12,
+		borderRadius: 20,
 		overflow: "hidden",
 		shadowColor: "#000",
 		shadowOffset: { width: 0, height: 2 },
 		shadowOpacity: 0.1,
-		shadowRadius: 4,
-		elevation: 2,
+		shadowRadius: 20,
+		elevation: 20,
+		height: crHeight * 0.3,
 	},
 	title: {
 		fontSize: 16,
@@ -155,19 +159,22 @@ const styles = StyleSheet.create({
 		padding: 12,
 	},
 	mapContainer: {
-		flex: 1,
-		borderTopWidth: 1,
-		borderTopColor: "#EEEEEE",
+		width: "100%",
+		height: 200, // Aspect ratio 5:3
+		padding: 10,
+		gap: 5,
+		borderRadius: 100,
 	},
 	mapView: {
 		width: "100%",
 		height: "100%",
+		borderRadius: 100,
 	},
 	loadingContainer: {
 		flex: 1,
 		justifyContent: "center",
 		alignItems: "center",
-		backgroundColor: "#F5F5F5",
+		backgroundColor: "transparent",
 		padding: 16,
 	},
 	loadingText: {

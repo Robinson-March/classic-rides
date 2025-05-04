@@ -12,6 +12,9 @@ import {
 } from "react-native";
 import InputField from "../../design/InputField";
 import { Ionicons } from "@expo/vector-icons"; // Assuming you're using Expo
+import { TealButton } from "../../design/Buttons/TealButton";
+import { OutlineButton } from "../../design/Buttons/OutlineButton";
+import { CRText } from "../../design/CRText";
 
 const LoginScreen: React.FC = ({ navigation }) => {
 	const [firstName, setFirstName] = useState("");
@@ -44,7 +47,7 @@ const LoginScreen: React.FC = ({ navigation }) => {
 					contentContainerStyle={styles.scrollContainer}
 					keyboardShouldPersistTaps="handled"
 				>
-					<Text style={styles.title}>Get Started</Text>
+					<CRText style={styles.title}>Get Started</CRText>
 
 					<InputField
 						placeholder="Firstname"
@@ -104,30 +107,27 @@ const LoginScreen: React.FC = ({ navigation }) => {
 					/>
 
 					<TouchableOpacity style={styles.forgotPassword}>
-						<Text style={styles.forgotPasswordText}>Forgot Password?</Text>
+						<CRText style={styles.forgotPasswordText}>Forgot Password?</CRText>
 					</TouchableOpacity>
 
-					<TouchableOpacity
-						style={styles.registerButton}
-						onPress={handleRegister}
-					>
-						<Text style={styles.registerButtonText}>Register</Text>
-					</TouchableOpacity>
+					<TealButton title="Register" onPress={() => handleRegister()} />
 
-					<TouchableOpacity style={styles.googleButton}>
+					<OutlineButton style={styles.googleButton} onPress={() => {}}>
 						<Image
 							source={{
 								uri: "https://developers.google.com/identity/images/g-logo.png",
 							}}
 							style={styles.googleIcon}
 						/>
-						<Text style={styles.googleButtonText}>continue with google</Text>
-					</TouchableOpacity>
+						<CRText style={styles.googleButtonText}>
+							continue with google
+						</CRText>
+					</OutlineButton>
 
 					<View style={styles.loginContainer}>
-						<Text style={styles.loginText}>Already have an account? </Text>
+						<CRText style={styles.loginText}>Already have an account? </CRText>
 						<TouchableOpacity>
-							<Text style={styles.loginLink}>Sign in</Text>
+							<CRText style={styles.loginLink}>Sign in</CRText>
 						</TouchableOpacity>
 					</View>
 				</ScrollView>
@@ -178,8 +178,7 @@ const styles = StyleSheet.create({
 	googleButton: {
 		flexDirection: "row",
 		backgroundColor: "#F5F5F5",
-		borderRadius: 28,
-		height: 56,
+
 		justifyContent: "center",
 		alignItems: "center",
 		marginBottom: 32,

@@ -3,12 +3,14 @@ import "react-native-reanimated";
 import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { ActivityIndicator } from "react-native";
+import { ActivityIndicator, SafeAreaView } from "react-native";
 import * as Font from "expo-font";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import StartScreen from "./components/design/StartScreen";
 import LoginScreen from "./components/Screens/Authentication/LoginScreen";
 import HomeScreen from "./components/Screens/Main/HomeScreen";
+import TourPackageScreen from "./components/Screens/Main/TourPackageScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -24,25 +26,65 @@ export default function App() {
 		"Karla-Medium": require("./assets/fonts/Karla/static/Karla-Medium.ttf"),
 	});
 
-	if (!fontsLoaded) return <ActivityIndicator />;
-	return (
-		<NavigationContainer>
-			<Stack.Navigator
-				screenOptions={{
-					headerShown: false,
-					presentation: "modal",
-					animation: "slide_from_right",
-					contentStyle: {
-						padding: 10,
-						alignItems: "center",
-						justifyContent: "center",
-					}, // ✅ fixed here
-				}}
+	if (!fontsLoaded)
+		return (
+			<SafeAreaView
+				style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
 			>
-				<Stack.Screen name="start" component={StartScreen} />
-				<Stack.Screen name="login" component={LoginScreen} />
-				<Stack.Screen name="home" component={HomeScreen} />
-			</Stack.Navigator>
-		</NavigationContainer>
+				<ActivityIndicator />
+			</SafeAreaView>
+		);
+
+	return (
+		<SafeAreaProvider>
+			<NavigationContainer>
+				<Stack.Navigator
+					screenOptions={{
+						headerShown: false,
+						headerStyle: {
+							backgroundColor: "transparent",
+							elevation: 0, // Remove shadow on Android
+							shadowOpacity: 0, // Remove shadow on iOS
+							borderBottomWidth: 0, // Remove the bottom border
+						},
+						headerShadowVisible: false, // Remove shadow
+						presentation: "modal",
+						animation: "slide_from_right",
+						contentStyle: {
+							padding: 10,
+							alignItems: "center",
+							justifyContent: "center",
+							width: "100%",
+						},
+					}}
+				>
+					<Stack.Screen
+						name="start"
+						component={StartScreen}
+						options={{ contentStyle: { width: "100%" } }}
+					/>
+					<Stack.Screen
+						name="login"
+						component={LoginScreen}
+						options={{ contentStyle: { width: "100%" } }}
+					/>
+					<Stack.Screen
+						name="home"
+						component={HomeScreen}
+						options={{ contentStyle: { width: "100%" } }}
+					/>
+					<Stack.Screen
+						name="tourpackageselection"
+						component={TourPackageScreen}
+						options={{
+							contentStyle: { width: "100%" },
+							headerShown: true,
+							headerTitle: "",
+							headerTransparent: true,
+						}}
+					/>
+				</Stack.Navigator>
+			</NavigationContainer>
+		</SafeAreaProvider>
 	);
 }

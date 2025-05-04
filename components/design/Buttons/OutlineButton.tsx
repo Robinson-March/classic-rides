@@ -8,25 +8,26 @@ import {
 } from "react-native";
 
 interface Props {
-	title: string;
+	children: React.ReactNode;
 	onPress: () => void;
 	style?: ViewStyle;
 }
 
-export const OutlineButton: React.FC<Props> = ({ title, onPress, style }) => (
+export const OutlineButton: React.FC<Props> = ({
+	children,
+	onPress,
+	style,
+}) => (
 	<TouchableOpacity onPress={onPress} style={[styles.button, style]}>
-		<Text style={styles.text}>{title}</Text>
+		{children}
 	</TouchableOpacity>
 );
 
 const styles = StyleSheet.create({
 	button: {
-		borderWidth: 1,
-		borderColor: "#007F7F",
-		borderRadius: 25,
-		paddingVertical: 14,
+		borderRadius: 50,
 		alignItems: "center",
-		marginVertical: 8,
+		padding: 15,
 	},
 	text: {
 		color: "#007F7F",

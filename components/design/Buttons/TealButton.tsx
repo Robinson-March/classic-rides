@@ -21,11 +21,10 @@ export const TealButton: React.FC<Props> = ({ title, onPress, style }) => (
 
 const styles = StyleSheet.create({
 	button: {
-		backgroundColor: "#007F7F",
-		borderRadius: 25,
-		paddingVertical: 14,
+		backgroundColor: "#008080",
+		borderRadius: 50,
 		alignItems: "center",
-		marginVertical: 8,
+		padding: 15,
 	},
 	text: {
 		color: "#fff",
