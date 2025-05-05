@@ -109,20 +109,21 @@ const LoginScreen: React.FC = ({ navigation }) => {
 					<TouchableOpacity style={styles.forgotPassword}>
 						<CRText style={styles.forgotPasswordText}>Forgot Password?</CRText>
 					</TouchableOpacity>
+					<View style={{ gap: 10 }}>
+						<TealButton title="Register" onPress={() => handleRegister()} />
 
-					<TealButton title="Register" onPress={() => handleRegister()} />
-
-					<OutlineButton style={styles.googleButton} onPress={() => {}}>
-						<Image
-							source={{
-								uri: "https://developers.google.com/identity/images/g-logo.png",
-							}}
-							style={styles.googleIcon}
-						/>
-						<CRText style={styles.googleButtonText}>
-							continue with google
-						</CRText>
-					</OutlineButton>
+						<OutlineButton style={styles.googleButton} onPress={() => {}}>
+							<Image
+								source={{
+									uri: "https://developers.google.com/identity/images/g-logo.png",
+								}}
+								style={styles.googleIcon}
+							/>
+							<CRText style={styles.googleButtonText}>
+								continue with google
+							</CRText>
+						</OutlineButton>
+					</View>
 
 					<View style={styles.loginContainer}>
 						<CRText style={styles.loginText}>Already have an account? </CRText>

@@ -53,7 +53,8 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 		justifyContent: "space-between",
 		alignSelf: "center",
-		width: crWidth * 0.8,
+		width: crWidth * 0.9,
+		paddingVertical: 20,
 	},
 	menuButton: {
 		padding: 4,

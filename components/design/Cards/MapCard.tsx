@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import * as Location from "expo-location";
 import MapView, { Marker } from "react-native-maps";
-import { crHeight } from "../shortened/Dimensions";
+import { crHeight, crWidth } from "../shortened/Dimensions";
 
 interface MapCardProps {
 	title?: string;
@@ -152,6 +152,7 @@ const styles = StyleSheet.create({
 		shadowRadius: 20,
 		elevation: 20,
 		height: crHeight * 0.3,
+		width: crWidth * 0.9,
 	},
 	title: {
 		fontSize: 16,

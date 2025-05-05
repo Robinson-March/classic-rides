@@ -38,7 +38,7 @@ const TourCard: React.FC<TourCardProps> = ({
 			activeOpacity={0.9}
 		>
 			<View style={styles.imageContainer}>
-				<Image source={image} style={styles.image} />
+				<Image source={{ uri: image }} style={styles.image} />
 				<CRText font="Karla" weight="light" style={styles.title}>
 					{title}
 				</CRText>

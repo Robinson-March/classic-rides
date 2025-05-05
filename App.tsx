@@ -10,7 +10,8 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import StartScreen from "./components/design/StartScreen";
 import LoginScreen from "./components/Screens/Authentication/LoginScreen";
 import HomeScreen from "./components/Screens/Main/HomeScreen";
-import TourPackageScreen from "./components/Screens/Main/TourPackageScreen";
+import TourPackageScreen from "./components/Screens/Tour/TourPackageScreen";
+import TourSiteInfoScreen from "./components/Screens/Tour/TourSiteInfoScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -76,6 +77,16 @@ export default function App() {
 					<Stack.Screen
 						name="tourpackageselection"
 						component={TourPackageScreen}
+						options={{
+							contentStyle: { width: "100%" },
+							headerShown: true,
+							headerTitle: "",
+							headerTransparent: true,
+						}}
+					/>
+					<Stack.Screen
+						name="toursiteinfo"
+						component={TourSiteInfoScreen}
 						options={{
 							contentStyle: { width: "100%" },
 							headerShown: true,

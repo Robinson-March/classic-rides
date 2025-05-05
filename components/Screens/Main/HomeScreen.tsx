@@ -1,11 +1,10 @@
-import type React from "react";
+import React, { useEffect } from "react";
 import {
 	FlatList,
 	View,
 	Text,
 	StyleSheet,
 	TouchableOpacity,
-	Image,
 } from "react-native";
 import Header from "../../design/Header";
 import MapCard from "../../design/Cards/MapCard";
@@ -13,46 +12,46 @@ import TourCard from "../../design/Cards/TourCard";
 import { TealButton } from "../../design/Buttons/TealButton";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { FadeUpView } from "../../design/FadeUpView";
+import { searchTripadvisorLocation } from "../../apifunctions/tripadvisor/searchTripadvisorLocation";
+import LoadingIndicator from "../../design/LoadingIndicator";
+import { crHeight } from "../../design/shortened/Dimensions";
+import { CRColors } from "../../design/shortened/CRColours";
 
 // Replace with your actual Google Maps API key
-const GOOGLE_MAPS_API_KEY = "AIzaSyC4eB1yTDBtJBvPb2g1kPjFn4deWKqsUdg";
+const GOOGLE_MAPS_API_KEY = process.env.EXPO_PUBLIC_MAP_API;
 
-const tourSites = [
+const tourSitesStatic = [
 	{
-		id: "1",
-		image: require("../../../assets/images/places/botanical.png"),
-		title: "Botanical Garden",
-		description: "Beautiful garden with exotic plants",
-		time: "60 min",
-		price: "$15",
+		location_id: "1",
+		image:
+			"https://media-cdn.tripadvisor.com/media/photo-m/1280/18/6c/00/18/vista-panoramica-de-parte.jpg",
+		name: "Botanical Garden",
 	},
 	{
-		id: "2",
-		image: require("../../../assets/images/places/mercedes.png"),
-		title: "Mercedes Stadium",
-		description: "An iconic stadium in downtown Atlanta",
-		time: "90 min",
-		price: "$35",
+		location_id: "2",
+		image:
+			"https://media-cdn.tripadvisor.com/media/photo-o/0f/9f/6c/fd/photo9jpg.jpg",
+		name: "Atlanta History Center",
 	},
 	{
-		id: "3",
-		image: require("../../../assets/images/places/aquarium.png"),
-		title: "Georgia Aquarium",
-		description: "World's most magical aquarium",
-		time: "120 min",
-		price: "$45",
+		location_id: "3",
+		image:
+			"https://media-cdn.tripadvisor.com/media/photo-o/07/41/24/45/zoo-atlanta.jpg",
+		name: "Zoo Atlanta",
 	},
 	{
-		id: "4",
-		image: require("../../../assets/images/places/centennial.png"),
-		title: "Centennial Park",
-		description: "Special night tour experience",
-		time: "90 min",
-		price: "$60",
+		location_id: "4",
+		image:
+			"https://media-cdn.tripadvisor.com/media/photo-o/0e/f2/6a/4d/beautiful-view-from-centennial.jpg",
+		name: "Centennial Park",
 	},
 ];
 
 const HomeScreen: React.FC = ({ navigation }) => {
+	const [tourSites, setTourSites] = React.useState(tourSitesStatic);
+	const [loading, setLoading] = React.useState(false);
+	const [error, setError] = React.useState<string | null>(null);
+
 	const handleMenuPress = () => console.log("Menu pressed");
 	const handleAvatarPress = () => console.log("Avatar pressed");
 	const handleMapPress = () => console.log("Map pressed");
@@ -60,8 +59,29 @@ const HomeScreen: React.FC = ({ navigation }) => {
 	const handleTourRidesPress = () =>
 		navigation.navigate("tourpackageselection");
 
+	const getAtlantaSites = async () => {
+		try {
+			setLoading(true);
+			setError(null);
+			const sites = await searchTripadvisorLocation(
+				"Atlanta",
+				process.env.EXPO_PUBLIC_TRIP_API,
+			);
+			setTourSites(sites.data);
+		} catch (err: any) {
+			console.error("Failed to fetch locations", err);
+			setError("Failed to load locations.");
+		} finally {
+			setLoading(false);
+		}
+	};
+
+	useEffect(() => {
+		getAtlantaSites();
+	}, []);
+
 	return (
-		<SafeAreaView>
+		<SafeAreaView style={styles.safeArea}>
 			<Header
 				username="Donna"
 				avatarSource={require("../../../assets/images/donna.png")}
@@ -70,8 +90,9 @@ const HomeScreen: React.FC = ({ navigation }) => {
 			/>
 			<FadeUpView delay={1000}>
 				<FlatList
+					style={{ height: crHeight * 0.89 }}
 					ListHeaderComponent={
-						<>
+						<View style={{ gap: 20 }}>
 							<View style={styles.mapSection}>
 								<MapCard
 									title="Current location"
@@ -86,26 +107,42 @@ const HomeScreen: React.FC = ({ navigation }) => {
 									<Text style={styles.seeAllText}>See all</Text>
 								</TouchableOpacity>
 							</View>
-						</>
+						</View>
 					}
 					data={tourSites}
-					keyExtractor={(item) => item.id}
+					keyExtractor={(item) => item.location_id}
 					renderItem={({ item }) => (
-						<TourCard image={item.image} title={item.title} />
+						<TourCard
+							image={item.image}
+							title={item.name}
+							onPress={() =>
+								navigation.navigate("toursiteinfo", {
+									location_id: item.location_id,
+									name: item.name,
+								})
+							}
+						/>
 					)}
 					numColumns={2}
 					contentContainerStyle={styles.cardsGrid}
 					columnWrapperStyle={styles.cardRow}
-					ListFooterComponent={
-						<TealButton
-							title="See tour rides"
-							onPress={handleTourRidesPress}
-							style={styles.tourRidesButton}
+					ListEmptyComponent={
+						<LoadingIndicator
+							loading={loading}
+							error={error}
+							message="Finding interesting sites near you..."
 						/>
 					}
 					showsVerticalScrollIndicator={false}
 				/>
 			</FadeUpView>
+			<View style={{ position: "absolute", bottom: 20, width: "100%" }}>
+				<TealButton
+					title="See tour rides"
+					onPress={handleTourRidesPress}
+					style={styles.tourRidesButton}
+				/>
+			</View>
 		</SafeAreaView>
 	);
 };
@@ -113,10 +150,11 @@ const HomeScreen: React.FC = ({ navigation }) => {
 const styles = StyleSheet.create({
 	safeArea: {
 		flex: 1,
-		backgroundColor: "#F8F8F8",
+		backgroundColor: CRColors.white,
 	},
 	mapSection: {
-		padding: 16,
+		alignItems: "center",
+		justifyContent: "center",
 	},
 	sectionHeader: {
 		flexDirection: "row",
