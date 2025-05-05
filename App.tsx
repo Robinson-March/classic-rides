@@ -12,6 +12,7 @@ import LoginScreen from "./components/Screens/Authentication/LoginScreen";
 import HomeScreen from "./components/Screens/Main/HomeScreen";
 import TourPackageScreen from "./components/Screens/Tour/TourPackageScreen";
 import TourSiteInfoScreen from "./components/Screens/Tour/TourSiteInfoScreen";
+import { CRColors } from "./components/design/shortened/CRColours";
 
 const Stack = createNativeStackNavigator();
 
@@ -88,7 +89,7 @@ export default function App() {
 						name="toursiteinfo"
 						component={TourSiteInfoScreen}
 						options={{
-							contentStyle: { width: "100%" },
+							contentStyle: { width: "100%", marginTop: 80 },
 							headerShown: true,
 							headerTitle: "",
 							headerTransparent: true,

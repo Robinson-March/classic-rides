@@ -23,6 +23,7 @@ export interface TripadvisorLocationDetails {
 	location_id: string;
 	name: string;
 	web_url: string;
+	description: string;
 	address_obj: {
 		street1: string;
 		city: string;

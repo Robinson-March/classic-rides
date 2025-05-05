@@ -25,6 +25,7 @@ export async function getLocationImages(
 	);
 
 	if (!response.ok) {
+		console.log(JSON.stringify(response, null, 2));
 		throw new Error(`Failed to fetch images for location ${locationId}`);
 	}
 

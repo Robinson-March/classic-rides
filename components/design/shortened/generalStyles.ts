@@ -12,4 +12,8 @@ export const generalStyles = StyleSheet.create({
 		resizeMode: "cover",
 		borderRadius: 20,
 	},
+	generalBottom: {
+		position: "absolute",
+		bottom: 10,
+	},
 });

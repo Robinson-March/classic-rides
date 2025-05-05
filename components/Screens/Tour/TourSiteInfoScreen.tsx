@@ -16,7 +16,17 @@ import { generalStyles } from "../../design/shortened/generalStyles";
 import { crHeight, crWidth } from "../../design/shortened/Dimensions";
 import { FadeUpView } from "../../design/FadeUpView";
 import { Ionicons } from "@expo/vector-icons";
-import { getLocationImages, TripadvisorImage } from "../../apifunctions/tripadvisor/getLocationImages";
+import {
+	getLocationImages,
+	TripadvisorImage,
+} from "../../apifunctions/tripadvisor/getLocationImages";
+import { TripadvisorLocationDetails } from "../../types/tripadvisors";
+import { StatusBar } from "expo-status-bar";
+import { useCRStore } from "../../../store";
+import TourCard from "../../design/Cards/TourCard";
+import { CRText } from "../../design/CRText";
+import { TealButton } from "../../design/Buttons/TealButton";
+import { useShallow } from "zustand/shallow";
 
 interface TourSiteInfoProps {
 	route: {
@@ -51,6 +61,26 @@ export default function TourSiteInfoScreen({
 }: TourSiteInfoProps) {
 	const { location_id, name } = route.params;
 
+	const [
+		searchTripadvisor,
+		tripSearchResults,
+		tripSearchLoading,
+		tripSearchError,
+	] = useCRStore(
+		useShallow((state) => [
+			state.searchTripadvisor,
+			state.tripSearchResults,
+			state.tripSearchLoading,
+			state.tripSearchError,
+		]),
+	);
+	useEffect(() => {
+		if (!tripSearchResults.length) {
+			searchTripadvisor("atlanta");
+		}
+	}, []);
+
+	//useEffect(() => {}, [tripSearchResults, location_id]);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
 	const [info, setInfo] = useState<TripadvisorLocationDetails>(null);
@@ -79,12 +109,14 @@ export default function TourSiteInfoScreen({
 				location_id,
 				process.env.EXPO_PUBLIC_TRIP_API,
 			);
-			setInfo(result);
-			const imageResults = await getLocationImages(
-				location_id,
-				process.env.EXPO_PUBLIC_TRIP_API,
-			);
-			setImages(imageResults);
+			if (result) {
+				setInfo(result);
+				const imageResults = await getLocationImages(
+					location_id,
+					process.env.EXPO_PUBLIC_TRIP_API,
+				);
+				setImages(imageResults);
+			}
 		} catch (err) {
 			setError("Failed to load tour site info");
 		} finally {
@@ -93,8 +125,12 @@ export default function TourSiteInfoScreen({
 	};
 
 	useEffect(() => {
-		getTourSiteInfo();
-	}, []);
+		if (info && info?.location_id !== location_id) {
+			getTourSiteInfo();
+		} else {
+			getTourSiteInfo();
+		}
+	}, [location_id]);
 
 	if (loading || !info) {
 		return <LoadingIndicator loading={loading} error={error} message={name} />;
@@ -105,23 +141,13 @@ export default function TourSiteInfoScreen({
 			style={generalStyles.safeArea}
 			edges={["right", "left", "bottom"]}
 		>
-			<ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+			<View style={styles.container}>
 				<FadeUpView delay={300}>
-					<TouchableOpacity
-						style={styles.backButton}
-						onPress={() => navigation.goBack()}
-					>
-						<Ionicons name="arrow-back" size={24} color="black" />
-					</TouchableOpacity>
-
 					{/* Main Image */}
 					<View style={styles.imageContainer}>
 						<Image
 							source={{
-								uri:
-									info.image ||
-									images[0]?.url ||
-									"https://via.placeholder.com/400x250",
+								uri: images[0]?.url || "https://via.placeholder.com/400x250",
 							}}
 							style={styles.headerImage}
 						/>
@@ -135,43 +161,43 @@ export default function TourSiteInfoScreen({
 
 					{/* Description */}
 					<View style={styles.descriptionContainer}>
-						<Text style={styles.descriptionText}>
-							{info.}
-						</Text>
-					</View>
-
-					{/* Similar Places Section */}
-					<View style={styles.similarPlacesSection}>
-						<Text style={styles.sectionTitle}>Similar places to visit</Text>
-						<FlatList
-							data={similarPlaces}
-							horizontal
-							showsHorizontalScrollIndicator={false}
-							keyExtractor={(item) => item.id}
-							contentContainerStyle={styles.similarPlacesContainer}
-							renderItem={({ item }) => (
-								<SimilarPlaceCard
-									image={item.image}
-									name={item.name}
-									onPress={() => {
-										// Add navigation to similar place
-									}}
-								/>
-							)}
-						/>
-					</View>
-
-					{/* Visit Button */}
-					<TouchableOpacity style={styles.visitButton}>
-						<Text style={styles.visitButtonText}>Visit this place</Text>
-					</TouchableOpacity>
-
-					{/* Bottom Indicator */}
-					<View style={styles.bottomIndicator}>
-						<View style={styles.indicatorLine}></View>
+						<Text style={styles.descriptionText}>{info.description}</Text>
 					</View>
 				</FadeUpView>
-			</ScrollView>
+				<View style={[generalStyles.generalBottom, { gap: 10 }]}>
+					<View style={{ gap: 20 }}>
+						<CRText style={styles.sectionTitle}>Sites near you</CRText>
+					</View>
+					<FlatList
+						style={{ padding: 10 }}
+						data={tripSearchResults}
+						keyExtractor={(item) => item.location_id}
+						contentContainerStyle={{ gap: 10 }}
+						renderItem={({ item }) => (
+							<TourCard
+								image={item.image}
+								title={item.name}
+								onPress={() =>
+									navigation.navigate("toursiteinfo", {
+										location_id: item.location_id,
+										name: item.name,
+									})
+								}
+							/>
+						)}
+						horizontal
+						ListEmptyComponent={
+							<LoadingIndicator
+								loading={tripSearchLoading}
+								error={tripSearchError}
+								message="Finding interesting sites near you..."
+							/>
+						}
+						showsHorizontalScrollIndicator={false}
+					/>
+					<TealButton title="Vist this place" />
+				</View>
+			</View>
 		</SafeAreaView>
 	);
 }
@@ -179,7 +205,8 @@ export default function TourSiteInfoScreen({
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		backgroundColor: "white",
+		//justifyContent: "center",
+		alignItems: "center",
 	},
 	backButton: {
 		position: "absolute",
@@ -197,7 +224,7 @@ const styles = StyleSheet.create({
 		marginTop: 10,
 	},
 	headerImage: {
-		width: "100%",
+		width: crWidth * 0.9,
 		height: 220,
 		borderRadius: 12,
 	},

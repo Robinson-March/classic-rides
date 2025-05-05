@@ -17,6 +17,7 @@ export const getTripadvisorLocationDetails = async (
 	try {
 		const response = await fetch(url, options);
 		if (!response.ok) {
+			console.log(JSON.stringify(response, null, 2));
 			throw new Error(`Failed to fetch: ${response.statusText}`);
 		}
 		const data = await response.json();

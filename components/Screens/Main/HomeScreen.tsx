@@ -16,41 +16,19 @@ import { searchTripadvisorLocation } from "../../apifunctions/tripadvisor/search
 import LoadingIndicator from "../../design/LoadingIndicator";
 import { crHeight } from "../../design/shortened/Dimensions";
 import { CRColors } from "../../design/shortened/CRColours";
+import { useCRStore } from "../../../store";
+import { CRText } from "../../design/CRText";
 
 // Replace with your actual Google Maps API key
 const GOOGLE_MAPS_API_KEY = process.env.EXPO_PUBLIC_MAP_API;
 
-const tourSitesStatic = [
-	{
-		location_id: "1",
-		image:
-			"https://media-cdn.tripadvisor.com/media/photo-m/1280/18/6c/00/18/vista-panoramica-de-parte.jpg",
-		name: "Botanical Garden",
-	},
-	{
-		location_id: "2",
-		image:
-			"https://media-cdn.tripadvisor.com/media/photo-o/0f/9f/6c/fd/photo9jpg.jpg",
-		name: "Atlanta History Center",
-	},
-	{
-		location_id: "3",
-		image:
-			"https://media-cdn.tripadvisor.com/media/photo-o/07/41/24/45/zoo-atlanta.jpg",
-		name: "Zoo Atlanta",
-	},
-	{
-		location_id: "4",
-		image:
-			"https://media-cdn.tripadvisor.com/media/photo-o/0e/f2/6a/4d/beautiful-view-from-centennial.jpg",
-		name: "Centennial Park",
-	},
-];
-
 const HomeScreen: React.FC = ({ navigation }) => {
-	const [tourSites, setTourSites] = React.useState(tourSitesStatic);
-	const [loading, setLoading] = React.useState(false);
-	const [error, setError] = React.useState<string | null>(null);
+	const {
+		searchTripadvisor,
+		tripSearchResults,
+		tripSearchLoading,
+		tripSearchError,
+	} = useCRStore();
 
 	const handleMenuPress = () => console.log("Menu pressed");
 	const handleAvatarPress = () => console.log("Avatar pressed");
@@ -59,25 +37,8 @@ const HomeScreen: React.FC = ({ navigation }) => {
 	const handleTourRidesPress = () =>
 		navigation.navigate("tourpackageselection");
 
-	const getAtlantaSites = async () => {
-		try {
-			setLoading(true);
-			setError(null);
-			const sites = await searchTripadvisorLocation(
-				"Atlanta",
-				process.env.EXPO_PUBLIC_TRIP_API,
-			);
-			setTourSites(sites.data);
-		} catch (err: any) {
-			console.error("Failed to fetch locations", err);
-			setError("Failed to load locations.");
-		} finally {
-			setLoading(false);
-		}
-	};
-
 	useEffect(() => {
-		getAtlantaSites();
+		searchTripadvisor("atlanta");
 	}, []);
 
 	return (
@@ -102,14 +63,14 @@ const HomeScreen: React.FC = ({ navigation }) => {
 							</View>
 
 							<View style={styles.sectionHeader}>
-								<Text style={styles.sectionTitle}>Sites near you</Text>
+								<CRText style={styles.sectionTitle}>Sites near you</CRText>
 								<TouchableOpacity onPress={handleSeeAllPress}>
-									<Text style={styles.seeAllText}>See all</Text>
+									<CRText style={styles.seeAllText}>See all</CRText>
 								</TouchableOpacity>
 							</View>
 						</View>
 					}
-					data={tourSites}
+					data={tripSearchResults}
 					keyExtractor={(item) => item.location_id}
 					renderItem={({ item }) => (
 						<TourCard
@@ -128,8 +89,8 @@ const HomeScreen: React.FC = ({ navigation }) => {
 					columnWrapperStyle={styles.cardRow}
 					ListEmptyComponent={
 						<LoadingIndicator
-							loading={loading}
-							error={error}
+							loading={tripSearchLoading}
+							error={tripSearchError}
 							message="Finding interesting sites near you..."
 						/>
 					}

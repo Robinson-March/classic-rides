@@ -6,6 +6,7 @@ import {
 	StyleSheet,
 	type ViewStyle,
 } from "react-native";
+import { crWidth } from "../shortened/Dimensions";
 
 interface Props {
 	title: string;
@@ -25,6 +26,9 @@ const styles = StyleSheet.create({
 		borderRadius: 50,
 		alignItems: "center",
 		padding: 15,
+		maxWidth: crWidth * 0.9,
+		alignSelf: "center",
+		width: crWidth * 0.9,
 	},
 	text: {
 		color: "#fff",
