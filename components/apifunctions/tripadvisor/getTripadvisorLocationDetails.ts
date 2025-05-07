@@ -1,6 +1,6 @@
 // src/api/getTripadvisorLocationDetails.ts
 
-import type { TripadvisorLocationDetails } from "../../types/tripadvisors";
+import type { TripadvisorLocationDetails } from "../../utils/types/tripadvisors";
 
 export const getTripadvisorLocationDetails = async (
 	locationId: string,

@@ -74,7 +74,7 @@ const HomeScreen: React.FC = ({ navigation }) => {
 					keyExtractor={(item) => item.location_id}
 					renderItem={({ item }) => (
 						<TourCard
-							image={item.image}
+								image={item.image}
 							title={item.name}
 							onPress={() =>
 								navigation.navigate("toursiteinfo", {

@@ -13,6 +13,8 @@ import HomeScreen from "./components/Screens/Main/HomeScreen";
 import TourPackageScreen from "./components/Screens/Tour/TourPackageScreen";
 import TourSiteInfoScreen from "./components/Screens/Tour/TourSiteInfoScreen";
 import { CRColors } from "./components/design/shortened/CRColours";
+import TourTypeScreen from "./components/Screens/Tour/TourTypeScreen";
+import TourSitesList from "./components/Screens/Tour/TourSitesListScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -44,7 +46,7 @@ export default function App() {
 					screenOptions={{
 						headerShown: false,
 						headerStyle: {
-							backgroundColor: "transparent",
+							backgroundColor: CRColors.white,
 							elevation: 0, // Remove shadow on Android
 							shadowOpacity: 0, // Remove shadow on iOS
 							borderBottomWidth: 0, // Remove the bottom border
@@ -57,6 +59,7 @@ export default function App() {
 							alignItems: "center",
 							justifyContent: "center",
 							width: "100%",
+							backgroundColor:CRColors.white
 						},
 					}}
 				>
@@ -93,6 +96,38 @@ export default function App() {
 							headerShown: true,
 							headerTitle: "",
 							headerTransparent: true,
+						}}
+					/>
+					<Stack.Screen
+						name="tourtype"
+						component={TourTypeScreen}
+						options={{
+							contentStyle: { width: "100%", marginTop: 80 },
+							headerShown: true,
+							headerTitle: "",
+							headerTransparent: true,
+							headerStyle: {
+							backgroundColor: CRColors.white,
+							elevation: 0, // Remove shadow on Android
+							shadowOpacity: 0, // Remove shadow on iOS
+							borderBottomWidth: 0, // Remove the bottom border
+						},
+						}}
+					/>
+					<Stack.Screen
+						name="toursiteslist"
+						component={TourSitesList}
+						options={{
+							contentStyle: { width: "100%", marginTop: 80 },
+							headerShown: true,
+							headerTitle: "",
+							headerTransparent: true,
+							headerStyle: {
+							backgroundColor: CRColors.white,
+							elevation: 0, // Remove shadow on Android
+							shadowOpacity: 0, // Remove shadow on iOS
+							borderBottomWidth: 0, // Remove the bottom border
+						},
 						}}
 					/>
 				</Stack.Navigator>

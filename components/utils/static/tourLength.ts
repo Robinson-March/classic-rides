@@ -1,0 +1,1 @@
+export const tourLength=['90 miuntues Alanta Tour','3 hours Experience Tour','6 hours Key To The City {"\n"}Experience Tour','Gift a ride']

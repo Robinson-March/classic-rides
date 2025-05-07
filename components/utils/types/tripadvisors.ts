@@ -13,12 +13,20 @@ export interface LocationSearchItem {
 	name: string;
 	address_obj: Address;
 	image?: string; // 👈 Added optional image field
+	description?:string
 }
 
 export interface LocationSearchResponse {
 	data: LocationSearchItem[];
 }
-
+export interface TourPackage{
+	tourlength?:number;
+	tourtype?:"Book Now"|"Schedule Later";
+	tourExperience?:any[];
+	tourCar?:string;
+	reminder?:"SMS"|"Email"
+	
+}
 export interface TripadvisorLocationDetails {
 	location_id: string;
 	name: string;

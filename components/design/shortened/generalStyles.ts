@@ -1,5 +1,6 @@
 import { StyleSheet } from "react-native";
 import { CRColors } from "./CRColours";
+import { crWidth } from "./Dimensions";
 
 export const generalStyles = StyleSheet.create({
 	safeArea: {
@@ -16,4 +17,14 @@ export const generalStyles = StyleSheet.create({
 		position: "absolute",
 		bottom: 10,
 	},
+	outlineButton: {
+			borderWidth: 1,
+			borderColor: "#404040",
+			alignItems: "center",
+			justifyContent: "center",
+			textAlign: "center",
+			padding: 20,
+			width: crWidth * 0.8,
+			borderRadius: 20,
+		},
 });

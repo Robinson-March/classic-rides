@@ -1,11 +1,15 @@
-// CRText.tsx
-import type React from "react";
-import { Text, type TextStyle, type StyleProp } from "react-native";
+import React from "react";
+import {
+	Text,
+	type TextStyle,
+	type StyleProp,
+	type TextProps,
+} from "react-native";
 
 type FontFamily = "Jura" | "Karla";
 type FontWeight = "light" | "regular" | "medium" | "bold";
 
-interface CRTextProps {
+interface CRTextProps extends TextProps {
 	children: React.ReactNode;
 	font?: FontFamily;
 	weight?: FontWeight;
@@ -23,6 +27,7 @@ export const CRText: React.FC<CRTextProps> = ({
 	color = "#404040",
 	align = "left",
 	style,
+	...rest
 }) => {
 	const getFontFamily = (): string => {
 		const weightMap = {
@@ -54,6 +59,7 @@ export const CRText: React.FC<CRTextProps> = ({
 				},
 				style,
 			]}
+			{...rest}
 		>
 			{children}
 		</Text>

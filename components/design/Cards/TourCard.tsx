@@ -21,6 +21,8 @@ interface TourCardProps {
 	time?: string;
 	price?: string;
 	onPress?: () => void;
+	width?:any
+	height?:any
 }
 
 const TourCard: React.FC<TourCardProps> = ({
@@ -29,21 +31,21 @@ const TourCard: React.FC<TourCardProps> = ({
 	description,
 	time,
 	price,
-	onPress,
+	onPress,width=cardWidth,height=100
 }) => {
 	return (
 		<TouchableOpacity
-			style={styles.container}
+			style={[styles.container,{width}]}
 			onPress={onPress}
 			activeOpacity={0.9}
 		>
 			<View style={styles.imageContainer}>
-				<Image source={{ uri: image }} style={styles.image} />
-				<CRText font="Karla" weight="light" style={styles.title}>
+				<Image source={{ uri: image }} style={[styles.image,{height}]} />
+				<CRText font="Karla" weight="bold" style={styles.title}>
 					{title}
 				</CRText>
 				{description && (
-					<CRText style={styles.description}>{description}</CRText>
+					<CRText numberOfLines={2}   style={[styles.description]}>{description}</CRText>
 				)}
 				{time && price && (
 					<View style={styles.detailsContainer}>
@@ -72,13 +74,12 @@ const TourCard: React.FC<TourCardProps> = ({
 
 const styles = StyleSheet.create({
 	container: {
-		width: cardWidth,
 		backgroundColor: "#FFFFFF",
 		borderRadius: 20,
 		shadowColor: "#000",
-		shadowOffset: { width: 0, height: 2 },
+		shadowOffset: { width: 0, height: 5 },
 		shadowOpacity: 0.1,
-		shadowRadius: 50,
+		shadowRadius: 150,
 		elevation: 20,
 		gap: 5,
 	},
@@ -103,7 +104,6 @@ const styles = StyleSheet.create({
 		color: "#333333",
 	},
 	description: {
-		fontSize: 12,
 		color: "#666666",
 	},
 	detailsContainer: {

@@ -20,7 +20,7 @@ import {
 	getLocationImages,
 	TripadvisorImage,
 } from "../../apifunctions/tripadvisor/getLocationImages";
-import { TripadvisorLocationDetails } from "../../types/tripadvisors";
+import { TripadvisorLocationDetails } from "../../utils/types/tripadvisors";
 import { StatusBar } from "expo-status-bar";
 import { useCRStore } from "../../../store";
 import TourCard from "../../design/Cards/TourCard";

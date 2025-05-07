@@ -4,32 +4,40 @@ import Animated, { FadeInUp } from "react-native-reanimated";
 import { CRText } from "../../design/CRText";
 import { OutlineButton } from "../../design/Buttons/OutlineButton";
 import { crWidth } from "../../design/shortened/Dimensions";
+import { FadeUpView } from "../../design/FadeUpView";
+import { useCRStore } from "../../../store";
+import { tourLength } from "../../utils/static/tourLength";
 
-export default function TourPackageScreen() {
+export default function TourPackageScreen({navigation}) {
+	const {setTourPackage}=useCRStore()
+	const handleSelect =(length:number)=>{
+setTourPackage({tourlength:length})
+navigation.navigate('tourtype')
+	}
 	return (
 		<View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-			<Animated.View
+			<FadeUpView
+				delay={800}
 				style={{ justifyContent: "center", alignItems: "center", gap: 10 }}
-				entering={FadeInUp.duration(500).delay(100)}
 			>
 				<CRText>Please Select length of tour</CRText>
 				<View style={{ gap: 20 }}>
-					<OutlineButton style={styles.button} onPress={() => {}}>
+					<OutlineButton style={styles.button} onPress={() => handleSelect(0)}>
 						<CRText>90 miuntues Alanta Tour</CRText>
 					</OutlineButton>
-					<OutlineButton style={styles.button} onPress={() => {}}>
+					<OutlineButton style={styles.button} onPress={() => handleSelect(1)}>
 						<CRText>3 hours Experience Tour</CRText>
 					</OutlineButton>
-					<OutlineButton style={styles.button} onPress={() => {}}>
+					<OutlineButton style={styles.button} onPress={() => handleSelect(2)}>
 						<CRText style={{ textAlign: "center" }}>
 							6 hours Key To The City {"\n"}Experience Tour
 						</CRText>
 					</OutlineButton>
-					<OutlineButton style={styles.button} onPress={() => {}}>
+					<OutlineButton style={styles.button} onPress={() => handleSelect(3)}>
 						<CRText>Gift a ride</CRText>
 					</OutlineButton>
 				</View>
-			</Animated.View>
+			</FadeUpView>
 		</View>
 	);
 }

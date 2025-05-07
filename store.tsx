@@ -32,7 +32,8 @@ import { create } from "zustand";
 import type {
 	LocationSearchItem,
 	LocationSearchResponse,
-} from "./components/types/tripadvisors";
+	TourPackage,
+} from "./components/utils/types/tripadvisors";
 import {
 	getLocationImages,
 	type TripadvisorImage,
@@ -44,7 +45,7 @@ interface AppState {
 	tripSearchLoading: boolean;
 	tripSearchError: string | null;
 	searchCache: Record<string, LocationSearchItem[]>;
-
+	tourPackage:TourPackage|null;
 	locationImages: TripadvisorImage[];
 	locationImagesLoading: boolean;
 	locationImagesError: string | null;
@@ -52,6 +53,7 @@ interface AppState {
 
 	searchTripadvisor: (query: string) => Promise<void>;
 	fetchLocationImages: (locationId: string) => Promise<void>;
+	setTourPackage:(tour:TourPackage)=>Promise<void>
 }
 
 export const useCRStore = create<AppState>((set, get) => ({
@@ -60,7 +62,13 @@ export const useCRStore = create<AppState>((set, get) => ({
 	tripSearchLoading: false,
 	tripSearchError: null,
 	searchCache: {},
-
+	tourPackage: {
+		tourCar:"",
+		reminder:"Email",
+	tourExperience:[],
+	tourlength:"",
+	tourtype:"Book Now"
+	},
 	// Image state
 	locationImages: [],
 	locationImagesLoading: false,
@@ -91,6 +99,7 @@ export const useCRStore = create<AppState>((set, get) => ({
 					name: item.name,
 					address_obj: item.address_obj,
 					image: item.image || item.photo?.images?.original?.url || undefined,
+					description:item.description
 				})) || [];
 
 			set((state) => ({
@@ -149,4 +158,9 @@ export const useCRStore = create<AppState>((set, get) => ({
 			});
 		}
 	},
+	setTourPackage: async (tour) => {
+	const currentTourPackage = get().tourPackage;
+	set({ tourPackage: { ...currentTourPackage, ...tour } });
+}
+
 }));
