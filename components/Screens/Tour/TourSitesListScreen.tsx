@@ -33,7 +33,9 @@ useEffect(() => {
 
 	setFilteredResults(slicedResults); // 👈 store sliced results
 }, [tourPackage?.tourlength, tripSearchResults]);
-
+const handleNavigation=()=>{
+	navigation.navigate('tourcars')
+}
   return (
 <SafeAreaView style={{ flex: 1 }}>
 	<FadeUpView style={{ flex: 1, alignItems: "center", }}>
@@ -81,7 +83,7 @@ useEffect(() => {
 		/>
 
 		<View style={[generalStyles.generalBottom, { bottom: 10 }]}>
-			<TealButton title="Proceed with tour" />
+			<TealButton title="Proceed with tour" onPress={handleNavigation}/>
 		</View>
 	</FadeUpView>
 </SafeAreaView>

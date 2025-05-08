@@ -11,7 +11,7 @@ type FadeUpViewProps = {
 export const FadeUpView: React.FC<FadeUpViewProps> = ({
 	children,
 	style,
-	delay = 0,
+	delay = 800,
 }) => {
 	const opacity = useRef(new Animated.Value(0)).current;
 	const translateY = useRef(new Animated.Value(20)).current;

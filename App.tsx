@@ -15,6 +15,10 @@ import TourSiteInfoScreen from "./components/Screens/Tour/TourSiteInfoScreen";
 import { CRColors } from "./components/design/shortened/CRColours";
 import TourTypeScreen from "./components/Screens/Tour/TourTypeScreen";
 import TourSitesList from "./components/Screens/Tour/TourSitesListScreen";
+import TourCarScreen from "./components/Screens/Tour/TourCarScreen";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import CarDetailsScreen from "./components/Screens/Tour/CarDetailsScreen";
+import TourOptionsScreen from "./components/Screens/Tour/TourOptionsScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -41,7 +45,8 @@ export default function App() {
 
 	return (
 		<SafeAreaProvider>
-			<NavigationContainer>
+			 <GestureHandlerRootView style={{ flex: 1 }}>
+				<NavigationContainer>
 				<Stack.Navigator
 					screenOptions={{
 						headerShown: false,
@@ -130,8 +135,58 @@ export default function App() {
 						},
 						}}
 					/>
+					<Stack.Screen
+						name="tourcars"
+						component={TourCarScreen}
+						options={{
+							contentStyle: { width: "100%", marginTop: 80 },
+							headerShown: true,
+							headerTitle: "",
+							headerTransparent: true,
+							headerStyle: {
+							backgroundColor: CRColors.white,
+							elevation: 0, // Remove shadow on Android
+							shadowOpacity: 0, // Remove shadow on iOS
+							borderBottomWidth: 0, // Remove the bottom border
+						},
+						}}
+					/>
+					<Stack.Screen
+						name="cardetails"
+						component={CarDetailsScreen}
+						options={{
+							contentStyle: { width: "100%", marginTop: 80 },
+							headerShown: true,
+							headerTitle: "",
+							headerTransparent: true,
+							headerStyle: {
+							backgroundColor: CRColors.white,
+							elevation: 0, // Remove shadow on Android
+							shadowOpacity: 0, // Remove shadow on iOS
+							borderBottomWidth: 0, // Remove the bottom border
+						},
+						}}
+					/>
+					<Stack.Screen
+						name="touroptions"
+						component={TourOptionsScreen}
+						options={{
+							contentStyle: { width: "100%", marginTop: 80 },
+							headerShown: true,
+							headerTitle: "",
+							headerTransparent: true,
+							headerStyle: {
+							backgroundColor: CRColors.white,
+							elevation: 0, // Remove shadow on Android
+							shadowOpacity: 0, // Remove shadow on iOS
+							borderBottomWidth: 0, // Remove the bottom border
+						},
+						}}
+					/>
 				</Stack.Navigator>
 			</NavigationContainer>
+			 </GestureHandlerRootView>
+			
 		</SafeAreaProvider>
 	);
 }

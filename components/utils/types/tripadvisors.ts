@@ -23,7 +23,7 @@ export interface TourPackage{
 	tourlength?:number;
 	tourtype?:"Book Now"|"Schedule Later";
 	tourExperience?:any[];
-	tourCar?:string;
+	tourCar?:number;
 	reminder?:"SMS"|"Email"
 	
 }
