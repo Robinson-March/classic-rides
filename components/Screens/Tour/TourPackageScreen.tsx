@@ -7,13 +7,14 @@ import { crWidth } from "../../design/shortened/Dimensions";
 import { FadeUpView } from "../../design/FadeUpView";
 import { useCRStore } from "../../../store";
 import { tourLength } from "../../utils/static/tourLength";
+import { CRColors } from "../../design/shortened/CRColours";
 
-export default function TourPackageScreen({navigation}) {
-	const {setTourPackage}=useCRStore()
-	const handleSelect =(length:number)=>{
-setTourPackage({tourlength:length})
-navigation.navigate('tourtype')
-	}
+export default function TourPackageScreen({ navigation }) {
+	const { setTourPackage } = useCRStore();
+	const handleSelect = (length: number) => {
+		setTourPackage({ tourlength: length });
+		navigation.navigate("tourtype");
+	};
 	return (
 		<View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
 			<FadeUpView
@@ -21,21 +22,27 @@ navigation.navigate('tourtype')
 				style={{ justifyContent: "center", alignItems: "center", gap: 10 }}
 			>
 				<CRText>Please Select length of tour</CRText>
+
 				<View style={{ gap: 20 }}>
-					<OutlineButton style={styles.button} onPress={() => handleSelect(0)}>
-						<CRText>90 miuntues Alanta Tour</CRText>
-					</OutlineButton>
-					<OutlineButton style={styles.button} onPress={() => handleSelect(1)}>
-						<CRText>3 hours Experience Tour</CRText>
-					</OutlineButton>
-					<OutlineButton style={styles.button} onPress={() => handleSelect(2)}>
-						<CRText style={{ textAlign: "center" }}>
-							6 hours Key To The City {"\n"}Experience Tour
-						</CRText>
-					</OutlineButton>
-					<OutlineButton style={styles.button} onPress={() => handleSelect(3)}>
-						<CRText>Gift a ride</CRText>
-					</OutlineButton>
+					{tourLength.map((tour, index) => (
+						<OutlineButton
+							style={styles.button}
+							onPress={() => handleSelect(index)}
+							key={index}
+						>
+							<CRText font="Jura" size={18}>
+								{tour.name}
+							</CRText>
+							<CRText font="Karla">accommodates {tour.accommodates}</CRText>
+							<CRText
+								style={{ color: CRColors.accent }}
+								font="Karla"
+								weight="bold"
+							>
+								${tour.price}
+							</CRText>
+						</OutlineButton>
+					))}
 				</View>
 			</FadeUpView>
 		</View>
@@ -45,11 +52,12 @@ const styles = StyleSheet.create({
 	button: {
 		borderWidth: 1,
 		borderColor: "#404040",
-		alignItems: "center",
+		alignItems: "flex-start",
 		justifyContent: "center",
 		textAlign: "center",
-		padding: 20,
+		paddingVertical: 10,
+		paddingHorizontal: 20,
 		width: crWidth * 0.8,
-		borderRadius: 20,
+		borderRadius: 30,
 	},
 });

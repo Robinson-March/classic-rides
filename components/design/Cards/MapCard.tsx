@@ -19,14 +19,16 @@ interface MapCardProps {
 	width?: number | string;
 	height?: number | string;
 	zoom?: number;
+	hideText?: Boolean;
 }
 
 const MapCard: React.FC<MapCardProps> = ({
 	title = "Current location",
 	onPress,
-	width = "100%",
-	height = 180,
+	width = crWidth * 0.9,
+	height = crHeight * 0.3,
 	zoom = 15,
+	hideText = false,
 }) => {
 	const [location, setLocation] = useState<Location.LocationObject | null>(
 		null,
@@ -99,6 +101,7 @@ const MapCard: React.FC<MapCardProps> = ({
 		<TouchableOpacity
 			style={[
 				styles.container,
+				{ height, width },
 				// {
 				// 	width: typeof width === "number" ? width : width,
 				// 	height: typeof height === "number" ? height : Number.parseInt(height),
@@ -107,7 +110,7 @@ const MapCard: React.FC<MapCardProps> = ({
 			onPress={handleMapPress}
 			activeOpacity={0.9}
 		>
-			<Text style={styles.title}>{title}</Text>
+			{!hideText && <Text style={styles.title}>{title}</Text>}
 			<View>
 				{loading ? (
 					<View style={styles.loadingContainer}>
@@ -146,13 +149,10 @@ const styles = StyleSheet.create({
 		backgroundColor: "#FFFFFF",
 		borderRadius: 20,
 		overflow: "hidden",
-		shadowColor: "#000",
-		shadowOffset: { width: 0, height: 2 },
-		shadowOpacity: 0.1,
-		shadowRadius: 20,
-		elevation: 20,
-		height: crHeight * 0.3,
-		width: crWidth * 0.9,
+		shadowOffset: { width: 0, height: 20 },
+		shadowOpacity: 0.3,
+		shadowRadius: 40,
+		elevation: 30,
 	},
 	title: {
 		fontSize: 16,

@@ -195,7 +195,10 @@ export default function TourSiteInfoScreen({
 						}
 						showsHorizontalScrollIndicator={false}
 					/>
-					<TealButton title="Vist this place" />
+					<TealButton
+						title="Vist this place"
+						onPress={() => navigation.navigate("tourpackageselection")}
+					/>
 				</View>
 			</View>
 		</SafeAreaView>

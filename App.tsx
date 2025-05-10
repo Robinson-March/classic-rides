@@ -19,6 +19,8 @@ import TourCarScreen from "./components/Screens/Tour/TourCarScreen";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import CarDetailsScreen from "./components/Screens/Tour/CarDetailsScreen";
 import TourOptionsScreen from "./components/Screens/Tour/TourOptionsScreen";
+import BookingConfirmation from "./components/Screens/Tour/BookingConfirmation";
+import PaymentsScreen from "./components/Screens/Tour/PaymentsScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -45,148 +47,179 @@ export default function App() {
 
 	return (
 		<SafeAreaProvider>
-			 <GestureHandlerRootView style={{ flex: 1 }}>
+			<GestureHandlerRootView style={{ flex: 1 }}>
 				<NavigationContainer>
-				<Stack.Navigator
-					screenOptions={{
-						headerShown: false,
-						headerStyle: {
-							backgroundColor: CRColors.white,
-							elevation: 0, // Remove shadow on Android
-							shadowOpacity: 0, // Remove shadow on iOS
-							borderBottomWidth: 0, // Remove the bottom border
-						},
-						headerShadowVisible: false, // Remove shadow
-						presentation: "modal",
-						animation: "slide_from_right",
-						contentStyle: {
-							padding: 10,
-							alignItems: "center",
-							justifyContent: "center",
-							width: "100%",
-							backgroundColor:CRColors.white
-						},
-					}}
-				>
-					<Stack.Screen
-						name="start"
-						component={StartScreen}
-						options={{ contentStyle: { width: "100%" } }}
-					/>
-					<Stack.Screen
-						name="login"
-						component={LoginScreen}
-						options={{ contentStyle: { width: "100%" } }}
-					/>
-					<Stack.Screen
-						name="home"
-						component={HomeScreen}
-						options={{ contentStyle: { width: "100%" } }}
-					/>
-					<Stack.Screen
-						name="tourpackageselection"
-						component={TourPackageScreen}
-						options={{
-							contentStyle: { width: "100%" },
-							headerShown: true,
-							headerTitle: "",
-							headerTransparent: true,
-						}}
-					/>
-					<Stack.Screen
-						name="toursiteinfo"
-						component={TourSiteInfoScreen}
-						options={{
-							contentStyle: { width: "100%", marginTop: 80 },
-							headerShown: true,
-							headerTitle: "",
-							headerTransparent: true,
-						}}
-					/>
-					<Stack.Screen
-						name="tourtype"
-						component={TourTypeScreen}
-						options={{
-							contentStyle: { width: "100%", marginTop: 80 },
-							headerShown: true,
-							headerTitle: "",
-							headerTransparent: true,
+					<Stack.Navigator
+						screenOptions={{
+							headerShown: false,
 							headerStyle: {
-							backgroundColor: CRColors.white,
-							elevation: 0, // Remove shadow on Android
-							shadowOpacity: 0, // Remove shadow on iOS
-							borderBottomWidth: 0, // Remove the bottom border
-						},
+								backgroundColor: CRColors.white,
+								elevation: 0, // Remove shadow on Android
+								shadowOpacity: 0, // Remove shadow on iOS
+								borderBottomWidth: 0, // Remove the bottom border
+							},
+							headerShadowVisible: false, // Remove shadow
+							presentation: "modal",
+							animation: "slide_from_right",
+							contentStyle: {
+								padding: 10,
+								alignItems: "center",
+								justifyContent: "center",
+								width: "100%",
+								backgroundColor: CRColors.white,
+							},
 						}}
-					/>
-					<Stack.Screen
-						name="toursiteslist"
-						component={TourSitesList}
-						options={{
-							contentStyle: { width: "100%", marginTop: 80 },
-							headerShown: true,
-							headerTitle: "",
-							headerTransparent: true,
-							headerStyle: {
-							backgroundColor: CRColors.white,
-							elevation: 0, // Remove shadow on Android
-							shadowOpacity: 0, // Remove shadow on iOS
-							borderBottomWidth: 0, // Remove the bottom border
-						},
-						}}
-					/>
-					<Stack.Screen
-						name="tourcars"
-						component={TourCarScreen}
-						options={{
-							contentStyle: { width: "100%", marginTop: 80 },
-							headerShown: true,
-							headerTitle: "",
-							headerTransparent: true,
-							headerStyle: {
-							backgroundColor: CRColors.white,
-							elevation: 0, // Remove shadow on Android
-							shadowOpacity: 0, // Remove shadow on iOS
-							borderBottomWidth: 0, // Remove the bottom border
-						},
-						}}
-					/>
-					<Stack.Screen
-						name="cardetails"
-						component={CarDetailsScreen}
-						options={{
-							contentStyle: { width: "100%", marginTop: 80 },
-							headerShown: true,
-							headerTitle: "",
-							headerTransparent: true,
-							headerStyle: {
-							backgroundColor: CRColors.white,
-							elevation: 0, // Remove shadow on Android
-							shadowOpacity: 0, // Remove shadow on iOS
-							borderBottomWidth: 0, // Remove the bottom border
-						},
-						}}
-					/>
-					<Stack.Screen
-						name="touroptions"
-						component={TourOptionsScreen}
-						options={{
-							contentStyle: { width: "100%", marginTop: 80 },
-							headerShown: true,
-							headerTitle: "",
-							headerTransparent: true,
-							headerStyle: {
-							backgroundColor: CRColors.white,
-							elevation: 0, // Remove shadow on Android
-							shadowOpacity: 0, // Remove shadow on iOS
-							borderBottomWidth: 0, // Remove the bottom border
-						},
-						}}
-					/>
-				</Stack.Navigator>
-			</NavigationContainer>
-			 </GestureHandlerRootView>
-			
+					>
+						<Stack.Screen
+							name="start"
+							component={StartScreen}
+							options={{ contentStyle: { width: "100%" } }}
+						/>
+						<Stack.Screen
+							name="login"
+							component={LoginScreen}
+							options={{ contentStyle: { width: "100%" } }}
+						/>
+						<Stack.Screen
+							name="home"
+							component={HomeScreen}
+							options={{ contentStyle: { width: "100%" } }}
+						/>
+						<Stack.Screen
+							name="tourpackageselection"
+							component={TourPackageScreen}
+							options={{
+								contentStyle: { width: "100%" },
+								headerShown: true,
+								headerTitle: "",
+								headerTransparent: true,
+							}}
+						/>
+						<Stack.Screen
+							name="toursiteinfo"
+							component={TourSiteInfoScreen}
+							options={{
+								contentStyle: { width: "100%", marginTop: 80 },
+								headerShown: true,
+								headerTitle: "",
+								headerTransparent: true,
+							}}
+						/>
+						<Stack.Screen
+							name="tourtype"
+							component={TourTypeScreen}
+							options={{
+								contentStyle: { width: "100%", marginTop: 80 },
+								headerShown: true,
+								headerTitle: "",
+								headerTransparent: true,
+								headerStyle: {
+									backgroundColor: CRColors.white,
+									elevation: 0, // Remove shadow on Android
+									shadowOpacity: 0, // Remove shadow on iOS
+									borderBottomWidth: 0, // Remove the bottom border
+								},
+							}}
+						/>
+						<Stack.Screen
+							name="toursiteslist"
+							component={TourSitesList}
+							options={{
+								contentStyle: { width: "100%", marginTop: 80 },
+								headerShown: true,
+								headerTitle: "",
+								headerTransparent: true,
+								headerStyle: {
+									backgroundColor: CRColors.white,
+									elevation: 0, // Remove shadow on Android
+									shadowOpacity: 0, // Remove shadow on iOS
+									borderBottomWidth: 0, // Remove the bottom border
+								},
+							}}
+						/>
+						<Stack.Screen
+							name="tourcars"
+							component={TourCarScreen}
+							options={{
+								contentStyle: { width: "100%", marginTop: 80 },
+								headerShown: true,
+								headerTitle: "",
+								headerTransparent: true,
+								headerStyle: {
+									backgroundColor: CRColors.white,
+									elevation: 0, // Remove shadow on Android
+									shadowOpacity: 0, // Remove shadow on iOS
+									borderBottomWidth: 0, // Remove the bottom border
+								},
+							}}
+						/>
+						<Stack.Screen
+							name="cardetails"
+							component={CarDetailsScreen}
+							options={{
+								contentStyle: { width: "100%", marginTop: 80 },
+								headerShown: true,
+								headerTitle: "",
+								headerTransparent: true,
+								headerStyle: {
+									backgroundColor: CRColors.white,
+									elevation: 0, // Remove shadow on Android
+									shadowOpacity: 0, // Remove shadow on iOS
+									borderBottomWidth: 0, // Remove the bottom border
+								},
+							}}
+						/>
+						<Stack.Screen
+							name="touroptions"
+							component={TourOptionsScreen}
+							options={{
+								contentStyle: { width: "100%", marginTop: 80 },
+								headerShown: true,
+								headerTitle: "",
+								headerTransparent: true,
+								headerStyle: {
+									backgroundColor: CRColors.white,
+									elevation: 0, // Remove shadow on Android
+									shadowOpacity: 0, // Remove shadow on iOS
+									borderBottomWidth: 0, // Remove the bottom border
+								},
+							}}
+						/>
+						<Stack.Screen
+							name="tourbooking"
+							component={BookingConfirmation}
+							options={{
+								contentStyle: { width: "100%", marginTop: 80 },
+								headerShown: true,
+								headerTitle: "",
+								headerTransparent: true,
+								headerStyle: {
+									backgroundColor: CRColors.white,
+									elevation: 0, // Remove shadow on Android
+									shadowOpacity: 0, // Remove shadow on iOS
+									borderBottomWidth: 0, // Remove the bottom border
+								},
+							}}
+						/>
+						<Stack.Screen
+							name="payment"
+							component={PaymentsScreen}
+							options={{
+								contentStyle: { width: "100%", marginTop: 80 },
+								headerShown: true,
+								headerTitle: "",
+								headerTransparent: true,
+								headerStyle: {
+									backgroundColor: CRColors.white,
+									elevation: 0, // Remove shadow on Android
+									shadowOpacity: 0, // Remove shadow on iOS
+									borderBottomWidth: 0, // Remove the bottom border
+								},
+							}}
+						/>
+					</Stack.Navigator>
+				</NavigationContainer>
+			</GestureHandlerRootView>
 		</SafeAreaProvider>
 	);
 }
