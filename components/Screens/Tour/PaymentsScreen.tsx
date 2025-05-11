@@ -160,7 +160,7 @@ export default function PaymentsScreen({ navigation }) {
 					onPress={() => {
 						// Navigate to the next screen or close the flow
 						// For now, just reset to initial screen
-						setPaymentConfirmed(false);
+						navigation.navigate("ubernav");
 					}}
 				/>
 			</View>

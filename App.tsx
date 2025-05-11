@@ -21,6 +21,7 @@ import CarDetailsScreen from "./components/Screens/Tour/CarDetailsScreen";
 import TourOptionsScreen from "./components/Screens/Tour/TourOptionsScreen";
 import BookingConfirmation from "./components/Screens/Tour/BookingConfirmation";
 import PaymentsScreen from "./components/Screens/Tour/PaymentsScreen";
+import UberNavigationMap from "./components/Screens/Main/UberNavigationScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -204,6 +205,22 @@ export default function App() {
 						<Stack.Screen
 							name="payment"
 							component={PaymentsScreen}
+							options={{
+								contentStyle: { width: "100%", marginTop: 80 },
+								headerShown: true,
+								headerTitle: "",
+								headerTransparent: true,
+								headerStyle: {
+									backgroundColor: CRColors.white,
+									elevation: 0, // Remove shadow on Android
+									shadowOpacity: 0, // Remove shadow on iOS
+									borderBottomWidth: 0, // Remove the bottom border
+								},
+							}}
+						/>
+						<Stack.Screen
+							name="ubernav"
+							component={UberNavigationMap}
 							options={{
 								contentStyle: { width: "100%", marginTop: 80 },
 								headerShown: true,

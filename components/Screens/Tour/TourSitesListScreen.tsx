@@ -4,7 +4,7 @@ import { FadeUpView } from "../../design/FadeUpView";
 import { useCRStore } from "../../../store";
 import { CRText } from "../../design/CRText";
 import { TealButton } from "../../design/Buttons/TealButton";
-import { crHeight } from "../../design/shortened/Dimensions";
+import { crHeight, crWidth } from "../../design/shortened/Dimensions";
 import TourCard from "../../design/Cards/TourCard";
 import LoadingIndicator from "../../design/LoadingIndicator";
 import { generalStyles } from "../../design/shortened/generalStyles";
@@ -44,7 +44,7 @@ export default function TourSitesList({ navigation }) {
 		<SafeAreaView style={{ flex: 1 }}>
 			<FadeUpView style={{ flex: 1, alignItems: "center" }}>
 				<FlatList
-					style={{ width: "90%" }}
+					style={{ width: "100%" }}
 					ListHeaderComponent={
 						<View style={{ gap: 10, marginBottom: 20 }}>
 							<CRText size={24}>
@@ -60,13 +60,16 @@ export default function TourSitesList({ navigation }) {
 					contentContainerStyle={{
 						gap: 20,
 						paddingBottom: 100, // to prevent bottom button overlap
+						justifyContent: "center",
+						alignItems: "center",
+						width: "100%",
 					}}
 					renderItem={({ item }) => (
 						<TourCard
 							image={item.image}
 							title={item.name}
 							description={item.description}
-							width={"100%"}
+							width={crWidth * 0.85}
 							height={crHeight * 0.2}
 							onPress={() =>
 								navigation.navigate("toursiteinfo", {
