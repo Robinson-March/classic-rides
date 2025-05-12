@@ -23,6 +23,8 @@
       "edgeToEdgeEnabled": true,
       "permissions": [
         "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.ACCESS_COARSE_LOCATION",
         "android.permission.ACCESS_FINE_LOCATION"
       ],
       "package": "com.anonymous.CR"
@@ -57,6 +59,12 @@
       "eas": {
         "projectId": "207dadf8-3148-4c9b-a66f-7b8d135637e7"
       }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/207dadf8-3148-4c9b-a66f-7b8d135637e7"
     }
   }
 }
