@@ -22,10 +22,30 @@ import TourOptionsScreen from "./components/Screens/Tour/TourOptionsScreen";
 import BookingConfirmation from "./components/Screens/Tour/BookingConfirmation";
 import PaymentsScreen from "./components/Screens/Tour/PaymentsScreen";
 import UberNavigationMap from "./components/Screens/Main/UberNavigationScreen";
+import * as Sentry from "@sentry/react-native";
+
+Sentry.init({
+	dsn: process.env.EXPO_PUBLIC_DSN,
+
+	// Adds more context data to events (IP address, cookies, user, etc.)
+	// For more information, visit: https://docs.sentry.io/platforms/react-native/data-management/data-collected/
+	sendDefaultPii: true,
+
+	// Configure Session Replay
+	replaysSessionSampleRate: 0.1,
+	replaysOnErrorSampleRate: 1,
+	integrations: [
+		Sentry.mobileReplayIntegration(),
+		Sentry.feedbackIntegration(),
+	],
+
+	// uncomment the line below to enable Spotlight (https://spotlightjs.com)
+	// spotlight: __DEV__,
+});
 
 const Stack = createNativeStackNavigator();
 
-export default function App() {
+export default Sentry.wrap(function App() {
 	const [fontsLoaded] = Font.useFonts({
 		Jura: require("./assets/fonts/Jura/static/Jura-Regular.ttf"),
 		Karla: require("./assets/fonts/Karla/static/Karla-Regular.ttf"),
@@ -239,4 +259,4 @@ export default function App() {
 			</GestureHandlerRootView>
 		</SafeAreaProvider>
 	);
-}
+});

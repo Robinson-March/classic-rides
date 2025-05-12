@@ -20,7 +20,7 @@ import { useCRStore } from "../../../store";
 import { CRText } from "../../design/CRText";
 
 // Replace with your actual Google Maps API key
-const GOOGLE_MAPS_API_KEY = process.env.EXPO_PUBLIC_MAP_API;
+const GOOGLE_MAPS_API_KEY = "AIzaSyC4eB1yTDBtJBvPb2g1kPjFn4deWKqsUdg";
 
 const HomeScreen: React.FC = ({ navigation }) => {
 	const {
@@ -34,9 +34,9 @@ const HomeScreen: React.FC = ({ navigation }) => {
 	const handleAvatarPress = () => console.log("Avatar pressed");
 	const handleMapPress = () => console.log("Map pressed");
 	const handleSeeAllPress = () => console.log("See all pressed");
-	const handleTourRidesPress = () =>
+	const handleTourRidesPress = () => {
 		navigation.navigate("tourpackageselection");
-
+	};
 	useEffect(() => {
 		searchTripadvisor("atlanta");
 	}, []);
@@ -74,7 +74,7 @@ const HomeScreen: React.FC = ({ navigation }) => {
 					keyExtractor={(item) => item.location_id}
 					renderItem={({ item }) => (
 						<TourCard
-								image={item.image}
+							image={item.image}
 							title={item.name}
 							onPress={() =>
 								navigation.navigate("toursiteinfo", {
