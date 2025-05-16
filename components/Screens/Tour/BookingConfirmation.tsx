@@ -14,7 +14,7 @@ import { TealButton } from "../../design/Buttons/TealButton";
 
 export default function BookingConfirmation({ navigation }) {
 	// Replace with your actual Google Maps API key
-	const GOOGLE_MAPS_API_KEY = "AIzaSyC4eB1yTDBtJBvPb2g1kPjFn4deWKqsUdg";
+	const GOOGLE_MAPS_API_KEY = process.env.EXPO_PUBLIC_MAP_API;
 	const { tourPackage, setTourPackage, tripSearchResults } = useCRStore();
 	const now = new Date();
 	now.setHours(now.getHours() + 1); // add 1 hour

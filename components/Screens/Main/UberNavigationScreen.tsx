@@ -18,11 +18,12 @@ import { CRText } from "../../design/CRText";
 
 const screen = Dimensions.get("window");
 
-export default function UberNavigationMap() {
+export default function UberNavigationMap({ navigation }) {
 	const [region, setRegion] = useState(null);
 	const [routeCoords, setRouteCoords] = useState([]);
 	const [destination, setDestination] = useState(null);
 	const [navigationStarted, setNavigationStarted] = useState(false);
+	const [hasArrived, setHasArrived] = useState(false);
 	const markerRef = useRef(null);
 
 	const [coordinate] = useState(
@@ -75,6 +76,9 @@ export default function UberNavigationMap() {
 					longitude,
 					duration: 1000,
 					useNativeDriver: false,
+					toValue: 0,
+					latitudeDelta: 0,
+					longitudeDelta: 0,
 				})
 				.start();
 
@@ -86,22 +90,43 @@ export default function UberNavigationMap() {
 			setRouteCoords(points);
 		})();
 	}, []);
-
+	useEffect(() => {
+		console.log(navigationStarted);
+		setTimeout(() => {
+			if (navigationStarted) {
+				setHasArrived(true);
+			}
+		}, 5000);
+	}, [navigationStarted]);
 	const getRoutePoints = async (from, to) => {
 		const origin = `${from.latitude},${from.longitude}`;
 		const destination = `${to.latitude},${to.longitude}`;
-		const GOOGLE_MAPS_API_KEY = "YOUR_GOOGLE_MAPS_API_KEY";
+		const GOOGLE_MAPS_API_KEY = process.env.EXPO_PUBLIC_MAP_API;
 
 		const url = `https://maps.googleapis.com/maps/api/directions/json?origin=${origin}&destination=${destination}&key=${GOOGLE_MAPS_API_KEY}`;
-		const response = await fetch(url);
-		const data = await response.json();
+		console.log("Fetching directions:", url); // 👈 Log the full URL
 
-		const points = polyline.decode(data.routes[0].overview_polyline.points);
-		const coords = points.map(([latitude, longitude]) => ({
-			latitude,
-			longitude,
-		}));
-		return coords;
+		try {
+			const response = await fetch(url);
+			const data = await response.json();
+
+			console.log("Google Directions API Response:", data); // 👈 Check this in console
+
+			if (!data.routes || !data.routes.length) {
+				console.warn("No routes found");
+				return [];
+			}
+
+			const points = polyline.decode(data.routes[0].overview_polyline.points);
+			const coords = points.map(([latitude, longitude]) => ({
+				latitude,
+				longitude,
+			}));
+			return coords;
+		} catch (error) {
+			console.error("Error fetching directions:", error);
+			return [];
+		}
 	};
 
 	const startNavigation = () => {
@@ -118,14 +143,27 @@ export default function UberNavigationMap() {
 			}
 
 			const nextCoord = routeCoords[index];
+
 			coordinate
 				.timing({
 					latitude: nextCoord.latitude,
 					longitude: nextCoord.longitude,
 					duration: 1000,
 					useNativeDriver: false,
+					toValue: 0,
+					latitudeDelta: 0,
+					longitudeDelta: 0,
 				})
 				.start();
+
+			// Optionally, update map view center as well
+			// If you want to animate map centering:
+			// mapRef.current?.animateToRegion({
+			//   latitude: nextCoord.latitude,
+			//   longitude: nextCoord.longitude,
+			//   latitudeDelta: 0.009,
+			//   longitudeDelta: 0.009,
+			// }, 1000);
 
 			index++;
 		}, 1000);
@@ -145,15 +183,22 @@ export default function UberNavigationMap() {
 				/>
 			</MapView>
 
-			{!navigationStarted ? (
-				<View style={[styles.buttonContainer]}>
-					<TealButton
-						title="Start Navigation"
-						onPress={startNavigation}
-						style={{ width: crWidth * 0.6 }}
-					/>
-				</View>
-			) : (
+			{/* {!navigationStarted ? ( */}
+			<View style={[styles.buttonContainer]}>
+				<TealButton
+					title={hasArrived ? "Start Trip" : "Start Navigation"}
+					onPress={
+						hasArrived
+							? () => navigation.navigate("activetour")
+							: startNavigation
+					}
+					style={{
+						width: crWidth * 0.6,
+						backgroundColor: hasArrived ? CRColors.yellow : CRColors.accent,
+					}}
+				/>
+			</View>
+			{/* ) : (
 				<View
 					style={{
 						padding: 20,
@@ -168,12 +213,15 @@ export default function UberNavigationMap() {
 					</CRText>
 
 					<TealButton
-						title="Stop Navigation"
-						onPress={() => setNavigationStarted(false)}
-						style={{ width: crWidth * 0.6 }}
+						title={hasArrived ? "Start Trip" : "Start Navigation"}
+						onPress={startNavigation}
+						style={{
+							width: crWidth * 0.6,
+							backgroundColor: hasArrived ? CRColors.yellow : CRColors.accent,
+						}}
 					/>
 				</View>
-			)}
+			)} */}
 		</View>
 	);
 }

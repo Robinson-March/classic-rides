@@ -20,7 +20,7 @@ import { useCRStore } from "../../../store";
 import { CRText } from "../../design/CRText";
 
 // Replace with your actual Google Maps API key
-const GOOGLE_MAPS_API_KEY = "AIzaSyC4eB1yTDBtJBvPb2g1kPjFn4deWKqsUdg";
+const GOOGLE_MAPS_API_KEY = process.env.EXPO_PUBLIC_MAP_API;
 
 const HomeScreen: React.FC = ({ navigation }) => {
 	const {
