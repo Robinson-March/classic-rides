@@ -66,12 +66,14 @@ export default function TourSiteInfoScreen({
 		tripSearchResults,
 		tripSearchLoading,
 		tripSearchError,
+		tourPackage,
 	] = useCRStore(
 		useShallow((state) => [
 			state.searchTripadvisor,
 			state.tripSearchResults,
 			state.tripSearchLoading,
 			state.tripSearchError,
+			state.tourPackage,
 		]),
 	);
 	useEffect(() => {
@@ -196,8 +198,15 @@ export default function TourSiteInfoScreen({
 						showsHorizontalScrollIndicator={false}
 					/>
 					<TealButton
-						title="Vist this place"
-						onPress={() => navigation.navigate("tourpackageselection")}
+						title="Visit this place"
+						onPress={() => {
+							const destination =
+								tourPackage?.tourlength !== null
+									? "tourcars"
+									: "tourpackageselection";
+							console.log(tourPackage?.tourlength);
+							navigation.navigate(destination);
+						}}
 					/>
 				</View>
 			</View>

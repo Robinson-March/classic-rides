@@ -6,9 +6,10 @@ import {
 	Image,
 	ScrollView,
 	Alert,
-	findNodeHandle,
+	InteractionManager,
+	BackHandler,
 } from "react-native";
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import { generalStyles } from "../../design/shortened/generalStyles";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { FadeUpView } from "../../design/FadeUpView";
@@ -20,39 +21,68 @@ import { AntDesign, FontAwesome6 } from "@expo/vector-icons";
 import { CRColors } from "../../design/shortened/CRColours";
 import SoundWave from "../../design/SoundWave";
 import * as Speech from "expo-speech";
+import { useFocusEffect } from "@react-navigation/native";
 
-export default function ActiveTourScreen() {
+export default function ActiveTourScreen({ navigation }) {
 	const { tourPackage, tripSearchResults } = useCRStore();
 	const [filteredResults, setFilteredResults] = useState(tripSearchResults);
 	const [currentIndex, setCurrentIndex] = useState(0);
 	const [isSpeaking, setIsSpeaking] = useState(false);
 	const [tourCompleted, setTourCompleted] = useState(false);
-	const [highlightedText, setHighlightedText] = useState("");
-	const [currentPosition, setCurrentPosition] = useState(0);
+	const [countdownSeconds, setCountdownSeconds] = useState(60);
+	const [countdownActive, setCountdownActive] = useState(false);
 
-	const scrollViewRef = useRef<ScrollView>(null);
-	const textContainerRef = useRef<View>(null);
+	// Add a ref to track if we're already processing a speech completion
+	const speechCompletionProcessingRef = useRef(false);
+	const scrollViewRef = useRef(null);
+	const countdownTimerRef = useRef(null);
 
 	const icons = [
 		{
 			id: "instagram",
-			component: <AntDesign name="instagram" size={24} color={CRColors.text} />,
+			component: <AntDesign name="instagram" size={20} color={CRColors.text} />,
 		},
 		{
 			id: "facebook",
 			component: (
-				<AntDesign name="facebook-square" size={24} color={CRColors.text} />
+				<AntDesign name="facebook-square" size={20} color={CRColors.text} />
 			),
 		},
 		{
 			id: "snapchat",
 			component: (
-				<FontAwesome6 name="snapchat" size={24} color={CRColors.text} />
+				<FontAwesome6 name="snapchat" size={20} color={CRColors.text} />
 			),
 		},
 	];
+	useFocusEffect(
+		useCallback(() => {
+			const onBackPress = () => {
+				// Instead of going back, navigate to your desired screen:
+				Alert.alert("Tour is active", "You cannot change page");
+				// Return true to prevent default back behavior
+				return true;
+			};
 
-	const speakTour = (index: number) => {
+			const subscription = BackHandler.addEventListener(
+				"hardwareBackPress",
+				onBackPress,
+			);
+
+			return () => subscription.remove();
+		}, [navigation]),
+	);
+	useEffect(() => {
+		const task = InteractionManager.runAfterInteractions(() => {
+			// Now UI has fully rendered after index change
+			console.log("UI updated. Ready for next step.");
+			// Trigger next logic like narration, etc.
+		});
+
+		return () => task.cancel();
+	}, [currentIndex]);
+
+	const speakTour = (index) => {
 		if (index >= filteredResults.length) {
 			setTourCompleted(true);
 			Alert.alert("Tour Completed", "You have visited all sites 🎉");
@@ -63,89 +93,72 @@ export default function ActiveTourScreen() {
 		if (!current?.description) return;
 
 		setIsSpeaking(true);
-
-		// Break description into sentences to highlight while speaking
-		const sentences = current.description.match(/[^.!?]+[.!?]+/g) || [
-			current.description,
-		];
-		let currentSentenceIndex = 0;
-
-		// Set initial highlight
-		if (sentences.length > 0) {
-			setHighlightedText(sentences[0].trim());
-			setCurrentPosition(0);
-		}
+		speechCompletionProcessingRef.current = false;
 
 		Speech.speak(current.description, {
 			rate: 0.95,
 			pitch: 1.1,
 			onDone: () => {
+				// Prevent duplicate processing of speech completion
+				if (speechCompletionProcessingRef.current) return;
+				speechCompletionProcessingRef.current = true;
+
 				setIsSpeaking(false);
-				setHighlightedText("");
-				setTimeout(() => {
-					setCurrentIndex((prevIndex) => {
-						const nextIndex = prevIndex + 1;
-						if (nextIndex >= filteredResults.length) {
-							setTourCompleted(true);
-							Alert.alert("Tour Completed", "You have visited all sites 🎉");
-							return prevIndex; // Keep the last index if we've reached the end
-						}
-						return nextIndex;
-					});
-				}, 60000); // Wait 1 minute before next, reduce for testing
 			},
 			onStopped: () => {
 				setIsSpeaking(false);
-				setHighlightedText("");
 			},
 			onError: () => {
 				setIsSpeaking(false);
-				setHighlightedText("");
 				Alert.alert("Speech Error", "An error occurred during narration.");
-			},
-			// Track speech progress and update highlighted text
-			onBoundary: (event) => {
-				// This event fires when speech reaches word or sentence boundaries
-				if (event.type === "word" && event.utterance && sentences.length > 0) {
-					const wordPosition = event.charIndex;
-
-					// Find which sentence we're currently in based on character position
-					let totalLength = 0;
-					let foundSentenceIndex = 0;
-
-					for (let i = 0; i < sentences.length; i++) {
-						totalLength += sentences[i].length;
-						if (wordPosition < totalLength) {
-							foundSentenceIndex = i;
-							break;
-						}
-					}
-
-					// Only update if we've moved to a new sentence
-					if (foundSentenceIndex !== currentSentenceIndex) {
-						currentSentenceIndex = foundSentenceIndex;
-						setHighlightedText(sentences[currentSentenceIndex].trim());
-						setCurrentPosition(currentSentenceIndex);
-
-						// Scroll to the highlighted text
-						scrollToHighlightedText();
-					}
-				}
 			},
 		});
 	};
 
-	const scrollToHighlightedText = () => {
-		if (textContainerRef.current && scrollViewRef.current) {
-			const node = findNodeHandle(textContainerRef.current);
-			if (node) {
-				// This will make the ScrollView scroll to the referenced View
-				scrollViewRef.current.scrollTo({
-					y: currentPosition * 30, // Approximate line height
-					animated: true,
-				});
-			}
+	// Start 1-minute countdown
+	const startCountdown = () => {
+		setCountdownSeconds(10);
+		setCountdownActive(true);
+
+		// Clear any existing timer
+		if (countdownTimerRef.current) {
+			clearInterval(countdownTimerRef.current);
 		}
+
+		countdownTimerRef.current = setInterval(() => {
+			setCountdownSeconds((prev) => {
+				if (prev <= 1) {
+					stopCountdown();
+					setCurrentIndex((prevIndex) => {
+						const nextIndex = prevIndex + 1;
+						if (nextIndex >= filteredResults.length) {
+							setTourCompleted(true);
+							//Alert.alert("Tour Completed", "You have visited all sites 🎉");
+							return prevIndex; // Keep the last index if we've reached the end
+						}
+						return nextIndex;
+					});
+					return 0;
+				}
+				return prev - 1;
+			});
+		}, 1000);
+	};
+
+	// Stop countdown
+	const stopCountdown = () => {
+		setCountdownActive(false);
+		if (countdownTimerRef.current) {
+			clearInterval(countdownTimerRef.current);
+			countdownTimerRef.current = null;
+		}
+	};
+
+	// Format seconds to mm:ss
+	const formatTime = (seconds) => {
+		const mins = Math.floor(seconds / 60);
+		const secs = seconds % 60;
+		return `${mins}:${secs < 10 ? "0" : ""}${secs}`;
 	};
 
 	// Stop current narration
@@ -153,7 +166,6 @@ export default function ActiveTourScreen() {
 		if (isSpeaking) {
 			Speech.stop();
 			setIsSpeaking(false);
-			setHighlightedText("");
 		}
 	};
 
@@ -164,7 +176,7 @@ export default function ActiveTourScreen() {
 			setCurrentIndex((prevIndex) => prevIndex + 1);
 		} else {
 			setTourCompleted(true);
-			Alert.alert("Tour Completed", "You have visited all sites 🎉");
+			//Alert.alert("Tour Completed", "You have visited all sites 🎉");
 		}
 	};
 
@@ -176,10 +188,9 @@ export default function ActiveTourScreen() {
 			1: 0.5,
 			2: 0.75,
 			3: 1,
-		} as const;
+		};
 
-		const percent =
-			lengthPercentMap[tourPackage.tourlength as 0 | 1 | 2 | 3] ?? 1;
+		const percent = lengthPercentMap[tourPackage.tourlength] ?? 1;
 		const count = Math.ceil(tripSearchResults.length * percent);
 		const slicedResults = tripSearchResults.slice(0, count);
 
@@ -192,19 +203,42 @@ export default function ActiveTourScreen() {
 	}, [tourPackage?.tourlength, tripSearchResults]);
 
 	useEffect(() => {
+		// Clear any existing speech when the index changes
+		stopSpeaking();
+
+		// Reset the speech completion processing flag
+		speechCompletionProcessingRef.current = false;
+
+		// Start new speech for the current index
 		if (
 			filteredResults.length &&
 			currentIndex < filteredResults.length &&
 			!tourCompleted
 		) {
-			speakTour(currentIndex);
-		}
+			// Short delay to ensure cleanup from previous speech is complete
+			const timer = setTimeout(() => {
+				speakTour(currentIndex);
+			}, 100);
 
-		// Cleanup function to stop speech when component unmounts or currentIndex changes
+			return () => clearTimeout(timer);
+		}
+	}, [currentIndex, filteredResults.length]);
+
+	useEffect(() => {
 		return () => {
 			stopSpeaking();
+			stopCountdown();
 		};
-	}, [currentIndex, filteredResults.length]);
+	}, []);
+
+	// Start the countdown when the component mounts and reset when index changes
+	useEffect(() => {
+		startCountdown();
+
+		return () => {
+			stopCountdown();
+		};
+	}, [currentIndex]);
 
 	const GOOGLE_MAPS_API_KEY = process.env.EXPO_PUBLIC_MAP_API;
 
@@ -227,7 +261,7 @@ export default function ActiveTourScreen() {
 						{ alignItems: "center", justifyContent: "center" },
 					]}
 				>
-					<CRText size={18}>No tour sites available</CRText>
+					<CRText size={20}>No tour sites available</CRText>
 				</View>
 			</SafeAreaView>
 		);
@@ -292,8 +326,8 @@ export default function ActiveTourScreen() {
 								gap: 30,
 							}}
 						>
-							<View style={{ gap: 20 }}>
-								<CRText font="Karla" weight="medium" size={20}>
+							<View style={{ gap: 10 }}>
+								<CRText font="Karla" weight="medium">
 									Share about {currentSite?.name || "this place"}
 								</CRText>
 								<View
@@ -323,61 +357,17 @@ export default function ActiveTourScreen() {
 								marginBottom: 10,
 								paddingBottom: 5,
 								borderBottomWidth: 1,
-								borderBottomColor: CRColors.lightGrey,
+								borderBottomColor: CRColors.tintAccent,
 							}}
 						>
 							<CRText>{`${currentSite?.name || "Unknown"} (1 minute)`}</CRText>
 							<SoundWave isSpeaking={isSpeaking} />
 						</View>
 
-						<View ref={textContainerRef}>
-							{currentSite?.description
-								?.split(/([.!?]+)/)
-								.map((segment, index) => {
-									// Join each sentence with its punctuation
-									if (
-										index % 2 === 0 &&
-										index < currentSite.description.split(/([.!?]+)/).length - 1
-									) {
-										const sentence =
-											segment +
-											currentSite.description.split(/([.!?]+)/)[index + 1];
-										const isHighlighted =
-											highlightedText && sentence.includes(highlightedText);
-
-										return (
-											<CRText
-												key={index}
-												font="Karla"
-												style={[
-													styles.descriptionText,
-													isHighlighted && styles.highlightedText,
-												]}
-											>
-												{sentence}
-											</CRText>
-										);
-									} else if (index % 2 !== 0) {
-										// Skip punctuation items as they're joined with the previous segment
-										return null;
-									} else {
-										// Handle the last segment if it doesn't have punctuation
-										return (
-											<CRText
-												key={index}
-												font="Karla"
-												style={[
-													styles.descriptionText,
-													highlightedText &&
-														segment.includes(highlightedText) &&
-														styles.highlightedText,
-												]}
-											>
-												{segment}
-											</CRText>
-										);
-									}
-								})}
+						<View>
+							<CRText style={styles.descriptionText}>
+								{currentSite?.description || "No description available."}
+							</CRText>
 						</View>
 
 						{/* Controls for manual navigation */}
@@ -403,7 +393,7 @@ export default function ActiveTourScreen() {
 									<AntDesign
 										name="playcircleo"
 										size={24}
-										color={tourCompleted ? CRColors.lightGrey : CRColors.text}
+										color={tourCompleted ? CRColors.tintAccent : CRColors.text}
 									/>
 									<CRText>Play</CRText>
 								</TouchableOpacity>
@@ -421,7 +411,7 @@ export default function ActiveTourScreen() {
 									size={24}
 									color={
 										currentIndex >= filteredResults.length - 1 || tourCompleted
-											? CRColors.lightGrey
+											? CRColors.tintAccent
 											: CRColors.text
 									}
 								/>
@@ -440,20 +430,36 @@ export default function ActiveTourScreen() {
 							bottom: 0,
 						}}
 					>
-						<View
-							style={{
-								backgroundColor: CRColors.tintAccent,
-								alignItems: "center",
-								padding: 20,
-								borderRadius: 20,
-							}}
+						<TouchableOpacity
+							onPress={() =>
+								tourCompleted && navigation.navigate("tourcompleted")
+							}
 						>
-							<CRText>
-								{tourCompleted
-									? "Tour completed! 🎉"
-									: `${Math.max(0, filteredResults.length - (currentIndex + 1))} site(s) to go (${Math.max(0, filteredResults.length - (currentIndex + 1)) * 1} minute(s))`}
-							</CRText>
-						</View>
+							<View
+								style={{
+									backgroundColor: CRColors.tintAccent,
+									alignItems: "center",
+									padding: 20,
+									borderRadius: 20,
+									flexDirection: "row",
+									justifyContent: "space-between",
+								}}
+							>
+								<CRText style={{ textAlign: "center" }}>
+									{tourCompleted
+										? "Tour completed! 🎉"
+										: `${Math.max(0, filteredResults.length - (currentIndex + 1))} site(s) to go (${Math.max(0, filteredResults.length - (currentIndex + 1)) * 1} minute(s))`}
+								</CRText>
+
+								{countdownActive && (
+									<View style={styles.countdownContainer}>
+										<CRText weight="medium" style={styles.countdownText}>
+											{`  ${formatTime(countdownSeconds)}`}
+										</CRText>
+									</View>
+								)}
+							</View>
+						</TouchableOpacity>
 					</View>
 				</FadeUpView>
 			</View>
@@ -489,10 +495,13 @@ const styles = StyleSheet.create({
 		lineHeight: 30,
 		marginBottom: 10,
 	},
-	highlightedText: {
-		backgroundColor: CRColors.tintAccent,
-		fontWeight: "bold",
-		borderRadius: 5,
-		padding: 2,
+	countdownContainer: {
+		backgroundColor: "rgba(0, 0, 0, 0.1)",
+		borderRadius: 6,
+		paddingHorizontal: 10,
+		paddingVertical: 5,
+	},
+	countdownText: {
+		color: CRColors.text,
 	},
 });

@@ -24,6 +24,7 @@ import PaymentsScreen from "./components/Screens/Tour/PaymentsScreen";
 import UberNavigationMap from "./components/Screens/Main/UberNavigationScreen";
 import * as Sentry from "@sentry/react-native";
 import ActiveTourScreen from "./components/Screens/ActiveTour/ActiveTourScreen";
+import CompletedTourScreen from "./components/Screens/ActiveTour/CompletedTourScreen";
 
 Sentry.init({
 	dsn: process.env.EXPO_PUBLIC_DSN,
@@ -258,6 +259,22 @@ export default Sentry.wrap(function App() {
 						<Stack.Screen
 							name="activetour"
 							component={ActiveTourScreen}
+							options={{
+								contentStyle: { width: "100%", marginTop: 80 },
+								headerShown: true,
+								headerTitle: "",
+								headerTransparent: true,
+								headerStyle: {
+									backgroundColor: CRColors.white,
+									elevation: 0, // Remove shadow on Android
+									shadowOpacity: 0, // Remove shadow on iOS
+									borderBottomWidth: 0, // Remove the bottom border
+								},
+							}}
+						/>
+						<Stack.Screen
+							name="tourcompleted"
+							component={CompletedTourScreen}
 							options={{
 								contentStyle: { width: "100%", marginTop: 80 },
 								headerShown: true,

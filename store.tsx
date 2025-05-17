@@ -41,11 +41,12 @@ import {
 import { searchTripadvisorLocation } from "./components/apifunctions/tripadvisor/searchTripadvisorLocation";
 
 interface AppState {
+	tourHistory: TourPackage & { date: string }[];
 	tripSearchResults: LocationSearchItem[];
 	tripSearchLoading: boolean;
 	tripSearchError: string | null;
 	searchCache: Record<string, LocationSearchItem[]>;
-	tourPackage:TourPackage|null;
+	tourPackage: TourPackage | null;
 	locationImages: TripadvisorImage[];
 	locationImagesLoading: boolean;
 	locationImagesError: string | null;
@@ -53,7 +54,7 @@ interface AppState {
 
 	searchTripadvisor: (query: string) => Promise<void>;
 	fetchLocationImages: (locationId: string) => Promise<void>;
-	setTourPackage:(tour:TourPackage)=>Promise<void>
+	setTourPackage: (tour: TourPackage) => Promise<void>;
 }
 
 export const useCRStore = create<AppState>((set, get) => ({
@@ -63,17 +64,20 @@ export const useCRStore = create<AppState>((set, get) => ({
 	tripSearchError: null,
 	searchCache: {},
 	tourPackage: {
-		tourCar:"",
-		reminder:"Email",
-	tourExperience:[],
-	tourlength:"",
-	tourtype:"Book Now"
+		tourCar: "",
+		reminder: "Email",
+		tourExperience: [],
+		tourlength: null,
+		tourtype: "Book Now",
 	},
 	// Image state
 	locationImages: [],
 	locationImagesLoading: false,
 	locationImagesError: null,
 	imageCache: {},
+	tourHistory: [],
+
+	// ...existing actions
 
 	// Search TripAdvisor Locations
 	searchTripadvisor: async (query: string) => {
@@ -99,7 +103,7 @@ export const useCRStore = create<AppState>((set, get) => ({
 					name: item.name,
 					address_obj: item.address_obj,
 					image: item.image || item.photo?.images?.original?.url || undefined,
-					description:item.description
+					description: item.description,
 				})) || [];
 
 			set((state) => ({
@@ -159,8 +163,16 @@ export const useCRStore = create<AppState>((set, get) => ({
 		}
 	},
 	setTourPackage: async (tour) => {
-	const currentTourPackage = get().tourPackage;
-	set({ tourPackage: { ...currentTourPackage, ...tour } });
-}
-
+		const currentTourPackage = get().tourPackage;
+		set({ tourPackage: { ...currentTourPackage, ...tour } });
+	},
+	addTourToHistory: (tour: TourPackage) => {
+		const newTour = {
+			...tour,
+			date: new Date().toISOString(),
+		};
+		set((state) => ({
+			tourHistory: [...state.tourHistory, newTour],
+		}));
+	},
 }));

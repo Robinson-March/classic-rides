@@ -9,6 +9,8 @@ import {
 	type KeyboardTypeOptions,
 	type NativeSyntheticEvent,
 	type TextInputFocusEventData,
+	type StyleProp,
+	type ViewStyle,
 } from "react-native";
 
 interface InputFieldProps {
@@ -25,6 +27,7 @@ interface InputFieldProps {
 	onRightIconPress?: () => void;
 	autoComplete?: string;
 	testID?: string;
+	style?: StyleProp<ViewStyle>; // ✅ new
 }
 
 const InputField: React.FC<InputFieldProps> = ({
@@ -41,6 +44,7 @@ const InputField: React.FC<InputFieldProps> = ({
 	onRightIconPress,
 	autoComplete,
 	testID,
+	style, // ✅ extract it
 }) => {
 	const [isFocused, setIsFocused] = useState(false);
 
@@ -55,7 +59,7 @@ const InputField: React.FC<InputFieldProps> = ({
 	};
 
 	return (
-		<View style={styles.container}>
+		<View style={[styles.container, style]}>
 			<View
 				style={[
 					styles.inputContainer,
