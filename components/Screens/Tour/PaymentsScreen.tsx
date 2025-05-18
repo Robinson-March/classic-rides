@@ -16,10 +16,12 @@ import { useCRStore } from "../../../store";
 import { cars } from "../../utils/static/cars";
 import { TealButton } from "../../design/Buttons/TealButton";
 import { generalStyles } from "../../design/shortened/generalStyles";
+import dayjs from "dayjs";
 
 export default function PaymentsScreen({ navigation }) {
 	const [paymentConfirmed, setPaymentConfirmed] = useState(false);
-	const { tourPackage, setTourPackage, tripSearchResults } = useCRStore();
+	const { tourPackage, setTourPackage, tripSearchResults, tourSchedule } =
+		useCRStore();
 	const now = new Date();
 	now.setHours(now.getHours() + 1); // add 1 hour
 	now.setMinutes(0); // round to sharp o'clock
@@ -43,7 +45,13 @@ export default function PaymentsScreen({ navigation }) {
 			time: timeString,
 		},
 	};
-
+	function handleProceed(): void {
+		if (tourPackage?.tourtype === "Book Now") {
+			navigation.navigate("ubernav");
+		} else {
+			navigation.navigate("scheduleconfirmation");
+		}
+	}
 	// Initial screen - Payment button
 	const InitialScreen = () => (
 		<View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
@@ -157,11 +165,11 @@ export default function PaymentsScreen({ navigation }) {
 			>
 				<TealButton
 					title="Proceed"
-					onPress={() => {
+					onPress={() =>
 						// Navigate to the next screen or close the flow
 						// For now, just reset to initial screen
-						navigation.navigate("ubernav");
-					}}
+						handleProceed()
+					}
 				/>
 			</View>
 		</SafeAreaView>

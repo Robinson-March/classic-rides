@@ -1,61 +1,44 @@
-import type React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 import {
 	View,
 	TextInput,
 	Text,
 	StyleSheet,
 	TouchableOpacity,
-	type KeyboardTypeOptions,
+	type TextInputProps,
 	type NativeSyntheticEvent,
 	type TextInputFocusEventData,
 	type StyleProp,
 	type ViewStyle,
 } from "react-native";
+import { CRColors } from "./shortened/CRColours";
 
-interface InputFieldProps {
-	placeholder: string;
-	value: string;
-	onChangeText: (text: string) => void;
-	secureTextEntry?: boolean;
-	keyboardType?: KeyboardTypeOptions;
-	autoCapitalize?: "none" | "sentences" | "words" | "characters";
-	onBlur?: (e: NativeSyntheticEvent<TextInputFocusEventData>) => void;
-	onFocus?: (e: NativeSyntheticEvent<TextInputFocusEventData>) => void;
+interface InputFieldProps extends TextInputProps {
 	errorText?: string;
 	rightIcon?: React.ReactNode;
 	onRightIconPress?: () => void;
-	autoComplete?: string;
-	testID?: string;
-	style?: StyleProp<ViewStyle>; // ✅ new
+	style?: StyleProp<ViewStyle>; // for container styling
 }
 
 const InputField: React.FC<InputFieldProps> = ({
-	placeholder,
-	value,
-	onChangeText,
-	secureTextEntry = false,
-	keyboardType = "default",
-	autoCapitalize = "none",
-	onBlur,
-	onFocus,
 	errorText,
 	rightIcon,
 	onRightIconPress,
-	autoComplete,
-	testID,
-	style, // ✅ extract it
+	style,
+	onFocus,
+	onBlur,
+	...rest
 }) => {
 	const [isFocused, setIsFocused] = useState(false);
 
 	const handleFocus = (e: NativeSyntheticEvent<TextInputFocusEventData>) => {
 		setIsFocused(true);
-		onFocus && onFocus(e);
+		if (onFocus) onFocus(e);
 	};
 
 	const handleBlur = (e: NativeSyntheticEvent<TextInputFocusEventData>) => {
 		setIsFocused(false);
-		onBlur && onBlur(e);
+		if (onBlur) onBlur(e);
 	};
 
 	return (
@@ -69,17 +52,10 @@ const InputField: React.FC<InputFieldProps> = ({
 			>
 				<TextInput
 					style={styles.input}
-					placeholder={placeholder}
-					value={value}
-					onChangeText={onChangeText}
-					secureTextEntry={secureTextEntry}
-					keyboardType={keyboardType}
-					autoCapitalize={autoCapitalize}
 					onFocus={handleFocus}
 					onBlur={handleBlur}
 					placeholderTextColor="#8E8E93"
-					autoComplete={autoComplete as any}
-					testID={testID}
+					{...rest} // forward all other TextInput props here
 				/>
 				{rightIcon && (
 					<TouchableOpacity
@@ -112,11 +88,11 @@ const styles = StyleSheet.create({
 		borderColor: "transparent",
 	},
 	inputContainerFocused: {
-		borderColor: "#007AFF",
+		borderColor: CRColors.accent,
 		backgroundColor: "#FFFFFF",
 	},
 	inputContainerError: {
-		borderColor: "#FF3B30",
+		borderColor: CRColors.red,
 	},
 	input: {
 		flex: 1,

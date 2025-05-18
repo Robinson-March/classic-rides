@@ -10,12 +10,15 @@ import {
 } from "react-native";
 import { CRText } from "./CRText";
 import { crWidth } from "./shortened/Dimensions";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { CRColors } from "./shortened/CRColours";
 
 interface HeaderProps {
 	username: string;
 	avatarSource: ImageSourcePropType;
 	onMenuPress?: () => void;
 	onAvatarPress?: () => void;
+	onMessageListPress?: () => void;
 }
 
 const Header: React.FC<HeaderProps> = ({
@@ -23,6 +26,7 @@ const Header: React.FC<HeaderProps> = ({
 	avatarSource,
 	onMenuPress,
 	onAvatarPress,
+	onMessageListPress,
 }) => {
 	return (
 		<View style={styles.container}>
@@ -39,10 +43,21 @@ const Header: React.FC<HeaderProps> = ({
 			</TouchableOpacity>
 
 			<CRText>Welcome, {username}</CRText>
-
-			<TouchableOpacity style={styles.avatarContainer} onPress={onAvatarPress}>
-				<Image source={avatarSource} style={styles.avatar} />
-			</TouchableOpacity>
+			<View style={{ flexDirection: "row", alignItems: "center", gap: 20 }}>
+				<TouchableOpacity onPress={onMessageListPress}>
+					<MaterialCommunityIcons
+						name="message-badge-outline"
+						size={24}
+						color={CRColors.red}
+					/>
+				</TouchableOpacity>
+				<TouchableOpacity
+					style={styles.avatarContainer}
+					onPress={onAvatarPress}
+				>
+					<Image source={avatarSource} style={styles.avatar} />
+				</TouchableOpacity>
+			</View>
 		</View>
 	);
 };

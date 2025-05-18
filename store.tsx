@@ -28,6 +28,14 @@ const tourSitesStatic: LocationSearchItem[] = [
 			"https://media-cdn.tripadvisor.com/media/photo-o/0e/f2/6a/4d/beautiful-view-from-centennial.jpg",
 	},
 ];
+interface ChatItem {
+	id: string;
+	from: string;
+	role: string;
+	message: string;
+	photoUrl: string;
+	seen: boolean;
+}
 import { create } from "zustand";
 import type {
 	LocationSearchItem,
@@ -51,10 +59,19 @@ interface AppState {
 	locationImagesLoading: boolean;
 	locationImagesError: string | null;
 	imageCache: Record<string, TripadvisorImage[]>;
-
+	tourSchedule: ScheduleItem | null;
+	currentChat: ChatItem | null;
+	setCurrentChat: (chat: ChatItem | null) => void;
+	addSchedule: (schedule: ScheduleItem) => void;
+	removeSchedule: (date: string, time: string) => void;
+	clearSchedule: () => void;
 	searchTripadvisor: (query: string) => Promise<void>;
 	fetchLocationImages: (locationId: string) => Promise<void>;
 	setTourPackage: (tour: TourPackage) => Promise<void>;
+}
+interface ScheduleItem {
+	date?: string; // ISO format: YYYY-MM-DD
+	time?: string; // Format: HH:mm (24hr)
 }
 
 export const useCRStore = create<AppState>((set, get) => ({
@@ -70,16 +87,15 @@ export const useCRStore = create<AppState>((set, get) => ({
 		tourlength: null,
 		tourtype: "Book Now",
 	},
+	tourSchedule: null,
 	// Image state
 	locationImages: [],
 	locationImagesLoading: false,
 	locationImagesError: null,
 	imageCache: {},
 	tourHistory: [],
-
-	// ...existing actions
-
-	// Search TripAdvisor Locations
+	currentChat: null,
+	setCurrentChat: (chat) => set({ currentChat: chat }),
 	searchTripadvisor: async (query: string) => {
 		const { searchCache } = get();
 
@@ -174,5 +190,33 @@ export const useCRStore = create<AppState>((set, get) => ({
 		set((state) => ({
 			tourHistory: [...state.tourHistory, newTour],
 		}));
+	},
+
+	addSchedule: (schedule) => {
+		set((state) => ({
+			tourSchedule: {
+				...state.tourSchedule,
+				...schedule, // merge in new date or time
+			},
+		}));
+	},
+
+	removeSchedule: (keyToRemove, value) => {
+		set((state) => {
+			if (!state.tourSchedule) return { tourSchedule: null };
+
+			const updatedSchedule = { ...state.tourSchedule };
+			if (keyToRemove === "date" || keyToRemove === "time") {
+				if (updatedSchedule[keyToRemove] === value) {
+					delete updatedSchedule[keyToRemove];
+				}
+			}
+			const isEmpty = !updatedSchedule.date && !updatedSchedule.time;
+			return { tourSchedule: isEmpty ? null : updatedSchedule };
+		});
+	},
+
+	clearSchedule: () => {
+		set({ tourSchedule: null });
 	},
 }));

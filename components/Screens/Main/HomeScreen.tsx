@@ -31,11 +31,14 @@ const HomeScreen: React.FC = ({ navigation }) => {
 	} = useCRStore();
 
 	const handleMenuPress = () => console.log("Menu pressed");
-	const handleAvatarPress = () => console.log("Avatar pressed");
+	const handleAvatarPress = () => navigation.navigate("profile");
 	const handleMapPress = () => console.log("Map pressed");
 	const handleSeeAllPress = () => console.log("See all pressed");
 	const handleTourRidesPress = () => {
 		navigation.navigate("tourpackageselection");
+	};
+	const handleMessageListPress = () => {
+		navigation.navigate("messagelist");
 	};
 	useEffect(() => {
 		searchTripadvisor("atlanta");
@@ -48,6 +51,7 @@ const HomeScreen: React.FC = ({ navigation }) => {
 				avatarSource={require("../../../assets/images/donna.png")}
 				onMenuPress={handleMenuPress}
 				onAvatarPress={handleAvatarPress}
+				onMessageListPress={handleMessageListPress}
 			/>
 			<FadeUpView delay={1000}>
 				<FlatList

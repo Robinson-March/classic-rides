@@ -6,46 +6,132 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { ActivityIndicator, SafeAreaView } from "react-native";
 import * as Font from "expo-font";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import * as Sentry from "@sentry/react-native";
 
+// Screen imports
 import StartScreen from "./components/design/StartScreen";
 import LoginScreen from "./components/Screens/Authentication/LoginScreen";
 import HomeScreen from "./components/Screens/Main/HomeScreen";
 import TourPackageScreen from "./components/Screens/Tour/TourPackageScreen";
 import TourSiteInfoScreen from "./components/Screens/Tour/TourSiteInfoScreen";
-import { CRColors } from "./components/design/shortened/CRColours";
 import TourTypeScreen from "./components/Screens/Tour/TourTypeScreen";
 import TourSitesList from "./components/Screens/Tour/TourSitesListScreen";
 import TourCarScreen from "./components/Screens/Tour/TourCarScreen";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
 import CarDetailsScreen from "./components/Screens/Tour/CarDetailsScreen";
 import TourOptionsScreen from "./components/Screens/Tour/TourOptionsScreen";
 import BookingConfirmation from "./components/Screens/Tour/BookingConfirmation";
 import PaymentsScreen from "./components/Screens/Tour/PaymentsScreen";
 import UberNavigationMap from "./components/Screens/Main/UberNavigationScreen";
-import * as Sentry from "@sentry/react-native";
 import ActiveTourScreen from "./components/Screens/ActiveTour/ActiveTourScreen";
 import CompletedTourScreen from "./components/Screens/ActiveTour/CompletedTourScreen";
+import ScheduleDateTourScreen from "./components/Screens/Main/ScheduleTourDateScreen";
+import ScheduleTourTimeScreen from "./components/Screens/Main/ScheduleTourTimeScreen";
+import ScheduleConfirmation from "./components/Screens/Main/ScheduleConfirmation";
+import MessagesList from "./components/Screens/Activities/Messages/MessagesListScreen";
+
+import { CRColors } from "./components/design/shortened/CRColours";
+import MessagesScreen from "./components/Screens/Activities/Messages/MessagesScreen";
+import ProfileScreen from "./components/Screens/Activities/ProfileScreen";
 
 Sentry.init({
 	dsn: process.env.EXPO_PUBLIC_DSN,
-
-	// Adds more context data to events (IP address, cookies, user, etc.)
-	// For more information, visit: https://docs.sentry.io/platforms/react-native/data-management/data-collected/
 	sendDefaultPii: true,
-
-	// Configure Session Replay
 	replaysSessionSampleRate: 0.1,
 	replaysOnErrorSampleRate: 1,
 	integrations: [
 		Sentry.mobileReplayIntegration(),
 		Sentry.feedbackIntegration(),
 	],
-
-	// uncomment the line below to enable Spotlight (https://spotlightjs.com)
-	// spotlight: __DEV__,
 });
 
 const Stack = createNativeStackNavigator();
+
+// Screen configuration definitions
+const SCREEN_CONFIGS = {
+	// Basic screens with full width
+	basic: {
+		contentStyle: { width: "100%" },
+		headerShown: false,
+	},
+
+	// Standard screens with header
+	standard: {
+		contentStyle: { width: "100%", marginTop: 80 },
+		headerShown: true,
+		headerTitle: "",
+		headerTransparent: true,
+		headerStyle: {
+			backgroundColor: CRColors.white,
+			elevation: 0,
+			shadowOpacity: 0,
+			borderBottomWidth: 0,
+		},
+	},
+
+	// Special case for messages list with title
+	messages: {
+		contentStyle: { width: "100%", marginTop: 80 },
+		headerShown: true,
+		headerTitle: "Messages",
+		headerTransparent: true,
+		headerStyle: {
+			backgroundColor: CRColors.white,
+			elevation: 0,
+			shadowOpacity: 0,
+			borderBottomWidth: 0,
+		},
+	},
+
+	// Special case for tour package selection
+	tourPackage: {
+		contentStyle: { width: "100%" },
+		headerShown: true,
+		headerTitle: "",
+		headerTransparent: true,
+	},
+};
+
+// Screen definitions with their configurations
+const SCREENS = [
+	{ name: "start", component: StartScreen, config: "basic" },
+	{ name: "login", component: LoginScreen, config: "basic" },
+	{ name: "home", component: HomeScreen, config: "basic" },
+	{
+		name: "tourpackageselection",
+		component: TourPackageScreen,
+		config: "tourPackage",
+	},
+	{ name: "toursiteinfo", component: TourSiteInfoScreen, config: "standard" },
+	{ name: "tourtype", component: TourTypeScreen, config: "standard" },
+	{ name: "toursiteslist", component: TourSitesList, config: "standard" },
+	{ name: "tourcars", component: TourCarScreen, config: "standard" },
+	{ name: "cardetails", component: CarDetailsScreen, config: "standard" },
+	{ name: "touroptions", component: TourOptionsScreen, config: "standard" },
+	{ name: "tourbooking", component: BookingConfirmation, config: "standard" },
+	{ name: "payment", component: PaymentsScreen, config: "standard" },
+	{ name: "ubernav", component: UberNavigationMap, config: "standard" },
+	{ name: "activetour", component: ActiveTourScreen, config: "standard" },
+	{ name: "tourcompleted", component: CompletedTourScreen, config: "standard" },
+	{
+		name: "scheduledatetour",
+		component: ScheduleDateTourScreen,
+		config: "standard",
+	},
+	{
+		name: "scheduletimetour",
+		component: ScheduleTourTimeScreen,
+		config: "standard",
+	},
+	{
+		name: "scheduleconfirmation",
+		component: ScheduleConfirmation,
+		config: "standard",
+	},
+	{ name: "messagelist", component: MessagesList, config: "messages" },
+	{ name: "messages", component: MessagesScreen, config: "tourPackage" },
+	{ name: "profile", component: ProfileScreen, config: "standard" },
+];
 
 export default Sentry.wrap(function App() {
 	const [fontsLoaded] = Font.useFonts({
@@ -77,11 +163,11 @@ export default Sentry.wrap(function App() {
 							headerShown: false,
 							headerStyle: {
 								backgroundColor: CRColors.white,
-								elevation: 0, // Remove shadow on Android
-								shadowOpacity: 0, // Remove shadow on iOS
-								borderBottomWidth: 0, // Remove the bottom border
+								elevation: 0,
+								shadowOpacity: 0,
+								borderBottomWidth: 0,
 							},
-							headerShadowVisible: false, // Remove shadow
+							headerShadowVisible: false,
 							presentation: "modal",
 							animation: "slide_from_right",
 							contentStyle: {
@@ -93,201 +179,14 @@ export default Sentry.wrap(function App() {
 							},
 						}}
 					>
-						<Stack.Screen
-							name="start"
-							component={StartScreen}
-							options={{ contentStyle: { width: "100%" } }}
-						/>
-						<Stack.Screen
-							name="login"
-							component={LoginScreen}
-							options={{ contentStyle: { width: "100%" } }}
-						/>
-						<Stack.Screen
-							name="home"
-							component={HomeScreen}
-							options={{ contentStyle: { width: "100%" } }}
-						/>
-						<Stack.Screen
-							name="tourpackageselection"
-							component={TourPackageScreen}
-							options={{
-								contentStyle: { width: "100%" },
-								headerShown: true,
-								headerTitle: "",
-								headerTransparent: true,
-							}}
-						/>
-						<Stack.Screen
-							name="toursiteinfo"
-							component={TourSiteInfoScreen}
-							options={{
-								contentStyle: { width: "100%", marginTop: 80 },
-								headerShown: true,
-								headerTitle: "",
-								headerTransparent: true,
-							}}
-						/>
-						<Stack.Screen
-							name="tourtype"
-							component={TourTypeScreen}
-							options={{
-								contentStyle: { width: "100%", marginTop: 80 },
-								headerShown: true,
-								headerTitle: "",
-								headerTransparent: true,
-								headerStyle: {
-									backgroundColor: CRColors.white,
-									elevation: 0, // Remove shadow on Android
-									shadowOpacity: 0, // Remove shadow on iOS
-									borderBottomWidth: 0, // Remove the bottom border
-								},
-							}}
-						/>
-						<Stack.Screen
-							name="toursiteslist"
-							component={TourSitesList}
-							options={{
-								contentStyle: { width: "100%", marginTop: 80 },
-								headerShown: true,
-								headerTitle: "",
-								headerTransparent: true,
-								headerStyle: {
-									backgroundColor: CRColors.white,
-									elevation: 0, // Remove shadow on Android
-									shadowOpacity: 0, // Remove shadow on iOS
-									borderBottomWidth: 0, // Remove the bottom border
-								},
-							}}
-						/>
-						<Stack.Screen
-							name="tourcars"
-							component={TourCarScreen}
-							options={{
-								contentStyle: { width: "100%", marginTop: 80 },
-								headerShown: true,
-								headerTitle: "",
-								headerTransparent: true,
-								headerStyle: {
-									backgroundColor: CRColors.white,
-									elevation: 0, // Remove shadow on Android
-									shadowOpacity: 0, // Remove shadow on iOS
-									borderBottomWidth: 0, // Remove the bottom border
-								},
-							}}
-						/>
-						<Stack.Screen
-							name="cardetails"
-							component={CarDetailsScreen}
-							options={{
-								contentStyle: { width: "100%", marginTop: 80 },
-								headerShown: true,
-								headerTitle: "",
-								headerTransparent: true,
-								headerStyle: {
-									backgroundColor: CRColors.white,
-									elevation: 0, // Remove shadow on Android
-									shadowOpacity: 0, // Remove shadow on iOS
-									borderBottomWidth: 0, // Remove the bottom border
-								},
-							}}
-						/>
-						<Stack.Screen
-							name="touroptions"
-							component={TourOptionsScreen}
-							options={{
-								contentStyle: { width: "100%", marginTop: 80 },
-								headerShown: true,
-								headerTitle: "",
-								headerTransparent: true,
-								headerStyle: {
-									backgroundColor: CRColors.white,
-									elevation: 0, // Remove shadow on Android
-									shadowOpacity: 0, // Remove shadow on iOS
-									borderBottomWidth: 0, // Remove the bottom border
-								},
-							}}
-						/>
-						<Stack.Screen
-							name="tourbooking"
-							component={BookingConfirmation}
-							options={{
-								contentStyle: { width: "100%", marginTop: 80 },
-								headerShown: true,
-								headerTitle: "",
-								headerTransparent: true,
-								headerStyle: {
-									backgroundColor: CRColors.white,
-									elevation: 0, // Remove shadow on Android
-									shadowOpacity: 0, // Remove shadow on iOS
-									borderBottomWidth: 0, // Remove the bottom border
-								},
-							}}
-						/>
-						<Stack.Screen
-							name="payment"
-							component={PaymentsScreen}
-							options={{
-								contentStyle: { width: "100%", marginTop: 80 },
-								headerShown: true,
-								headerTitle: "",
-								headerTransparent: true,
-								headerStyle: {
-									backgroundColor: CRColors.white,
-									elevation: 0, // Remove shadow on Android
-									shadowOpacity: 0, // Remove shadow on iOS
-									borderBottomWidth: 0, // Remove the bottom border
-								},
-							}}
-						/>
-						<Stack.Screen
-							name="ubernav"
-							component={UberNavigationMap}
-							options={{
-								contentStyle: { width: "100%", marginTop: 80 },
-								headerShown: true,
-								headerTitle: "",
-								headerTransparent: true,
-								headerStyle: {
-									backgroundColor: CRColors.white,
-									elevation: 0, // Remove shadow on Android
-									shadowOpacity: 0, // Remove shadow on iOS
-									borderBottomWidth: 0, // Remove the bottom border
-								},
-							}}
-						/>
-						<Stack.Screen
-							name="activetour"
-							component={ActiveTourScreen}
-							options={{
-								contentStyle: { width: "100%", marginTop: 80 },
-								headerShown: true,
-								headerTitle: "",
-								headerTransparent: true,
-								headerStyle: {
-									backgroundColor: CRColors.white,
-									elevation: 0, // Remove shadow on Android
-									shadowOpacity: 0, // Remove shadow on iOS
-									borderBottomWidth: 0, // Remove the bottom border
-								},
-							}}
-						/>
-						<Stack.Screen
-							name="tourcompleted"
-							component={CompletedTourScreen}
-							options={{
-								contentStyle: { width: "100%", marginTop: 80 },
-								headerShown: true,
-								headerTitle: "",
-								headerTransparent: true,
-								headerStyle: {
-									backgroundColor: CRColors.white,
-									elevation: 0, // Remove shadow on Android
-									shadowOpacity: 0, // Remove shadow on iOS
-									borderBottomWidth: 0, // Remove the bottom border
-								},
-							}}
-						/>
+						{SCREENS.map((screen) => (
+							<Stack.Screen
+								key={screen.name}
+								name={screen.name}
+								component={screen.component}
+								options={SCREEN_CONFIGS[screen.config]}
+							/>
+						))}
 					</Stack.Navigator>
 				</NavigationContainer>
 			</GestureHandlerRootView>

@@ -11,8 +11,13 @@ import { tourLength } from "../../utils/static/tourLength";
 export default function TourTypeScreen({ navigation }) {
 	const { tourPackage, setTourPackage } = useCRStore();
 	const handleSelect = (type: "Book Now" | "Schedule Later") => {
-		setTourPackage({ tourtype: type });
-		navigation.navigate("toursiteslist");
+		if (type === "Book Now") {
+			setTourPackage({ tourtype: type });
+			navigation.navigate("toursiteslist");
+		} else {
+			setTourPackage({ tourtype: type });
+			navigation.navigate("scheduledatetour");
+		}
 	};
 	return (
 		<View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
